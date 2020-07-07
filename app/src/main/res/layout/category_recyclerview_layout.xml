@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="3dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/category_constraintClick"
+        style="@style/recyclerView_layout_style"
+        android:background="@drawable/rounded_corner_background_light_purple"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/favouriteCategory_ImageView"
+            style="@style/recyclerView_layout_ImageView"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/importantCat_TextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/categoryName_TextView"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/totalTask_TextView"
+            style="@style/recyclerView_layout_SubTextView"
+            android:text="-- Tasks, "
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/categoryName_TextView" />
+
+        <TextView
+            android:id="@+id/pendingTask_TextView"
+            style="@style/recyclerView_layout_SubTextView"
+            android:layout_marginStart="2dp"
+            android:text="-- Pending Task"
+            app:layout_constraintStart_toEndOf="@+id/totalTask_TextView"
+            app:layout_constraintTop_toBottomOf="@+id/categoryName_TextView" />
+
+        <TextView
+            android:id="@+id/categoryName_TextView"
+            style="@style/recyclerView_layout_HeaderTextView"
+            android:text="Groceries"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/categoryID_TextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

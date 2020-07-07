@@ -1,0 +1,255 @@
+<resources>
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light">
+
+        <!-- Customize your theme here. -->
+
+        <item name="colorPrimary">@color/dark_purple_background</item>
+        <item name="colorPrimaryDark">@color/dark_purple_background</item>
+        <item name="colorAccent">@color/medium_purple_background</item>
+
+        //dialogBox library Theme
+        <item name="material_dialog_background">@color/light_purple_background</item>
+        <item name="material_dialog_title_text_color">#000000</item>
+        <item name="material_dialog_message_text_color">#5F5F5F</item>
+        <item name="material_dialog_positive_button_color">@color/dark_purple_background</item>
+        <item name="material_dialog_positive_button_text_color">#FFFFFF</item>
+        <item name="material_dialog_negative_button_text_color">@color/dark_purple_background</item>
+    </style>
+
+    <style name="bottom_navigation_TextView">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textSize">@dimen/textXS</item>
+        <item name="android:layout_marginStart">7dp</item>
+        <item name="paddingStart">@dimen/dp_10</item>
+    </style>
+
+    <style name="bottom_navigation_ImageView">
+        <item name="android:layout_width">34dp</item>
+        <item name="android:layout_height">34dp</item>
+        <item name="elevation">5dp</item>
+    </style>
+
+    <style name="empty_TextView">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textSize">@dimen/textS</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="empty_Text_ImageView">
+        <item name="android:layout_width">24dp</item>
+        <item name="android:layout_height">24dp</item>
+        <item name="android:layout_marginTop">10dp</item>
+    </style>
+
+    <style name="selection_TextView">
+        <item name="android:layout_width">250dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textSize">@dimen/textS</item>
+        <item name="android:layout_marginStart">@dimen/dp_15</item>
+    </style>
+
+    <style name="checkBox_selection">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:backgroundTint">@color/light_purple_background</item>
+        <item name="android:buttonTint">@color/dark_purple_background</item>
+    </style>
+
+    <style name="menu_ICON_selection">
+        <item name="android:layout_width">35dp</item>
+        <item name="android:layout_height">35dp</item>
+        <item name="android:background">@drawable/menu_icon</item>
+    </style>
+
+    <style name="constraint_selection">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">@dimen/dp_5</item>
+        <item name="android:background">@drawable/rounded_corner_background_light_purple</item>
+        <item name="android:padding">3dp</item>
+    </style>
+
+    <style name="splashScreen_TextView">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">@dimen/textXXL</item>
+    </style>
+
+    <style name="button_style">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">@dimen/textM</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:gravity">center_horizontal|center_vertical</item>
+        <item name="android:background">@drawable/rounded_corner_background_dark_purple</item>
+    </style>
+
+    <style name="recyclerViewStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_margin">1dp</item>
+        <item name="android:background">@drawable/rounded_corner_background_white</item>
+    </style>
+
+    <style name="recyclerView_layout_style">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:padding">10dp</item>
+    </style>
+
+    <style name="recyclerView_layout_HeaderTextView">
+        <item name="android:layout_width">270dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">@dimen/textS</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+
+    <style name="recyclerView_layout_SubTextView">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">@dimen/dp_10</item>
+        <item name="android:textSize">@dimen/textXS</item>
+    </style>
+
+    <style name="recyclerView_layout_ImageView">
+        <item name="android:layout_width">30dp</item>
+        <item name="android:layout_height">30dp</item>
+    </style>
+
+    <style name="popupDialog_Background_Style">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginStart">5dp</item>
+        <item name="android:padding">10dp</item>
+        <item name="android:layout_marginEnd">5dp</item>
+        <item name="android:layout_gravity">bottom</item>
+    </style>
+
+    <style name="popupDialog_EditText_Style">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">50dp</item>
+        <item name="android:layout_marginTop">15dp</item>
+        <item name="android:padding">5dp</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="popupDialog_Button_TextStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:drawablePadding">5dp</item>
+        <item name="android:padding">7dp</item>
+        <item name="android:textSize">@dimen/textXS</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:gravity">center_vertical</item>
+    </style>
+
+    <style name="popupDialog_Header_TextView">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">@dimen/textSmall</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="dialogBoxTheme" parent="android:style/Theme.Translucent">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+
+    <style name="Task_Header_TextView">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">@dimen/textSmall</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+
+    <style name="Task_SubText_TextView">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">@dimen/textSmall</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+
+    <style name="SCBSwitch" parent="Theme.AppCompat.Light">
+        <!-- active thumb & track color (30% transparency) -->
+        <item name="colorControlActivated">@color/dark_purple_background</item>
+
+        <!-- inactive thumb color -->
+        <item name="colorSwitchThumbNormal">@color/gray</item>
+
+        <!-- inactive track color (30% transparency) -->
+        <item name="android:colorForeground">@color/gray</item>
+    </style>
+
+    <style name="scrollViewStyle">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">0dp</item>
+        <item name="android:layout_marginStart">5dp</item>
+        <item name="android:layout_marginEnd">5dp</item>
+        <item name="android:layout_marginTop">15dp</item>
+        <item name="android:padding">15dp</item>
+        <item name="android:scrollbars">none</item>
+        <item name="android:orientation">vertical</item>
+    </style>
+
+    <style name="task_RecyclerView_datetime_TextView">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">@dimen/textXS</item>
+    </style>
+
+    <style name="task_RecyclerView_ImageView">
+        <item name="android:layout_width">20dp</item>
+        <item name="android:layout_height">20dp</item>
+    </style>
+
+    <style name="count_ConstraintStyle">
+        <item name="android:layout_width">20dp</item>
+        <item name="android:layout_height">20dp</item>
+        <item name="android:layout_marginStart">20dp</item>
+        <item name="android:elevation">2dp</item>
+        <item name="android:background">@drawable/circular_background</item>
+    </style>
+
+    <style name="count_TextViewStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">10sp</item>
+        <item name="android:padding">2dp</item>
+    </style>
+
+    <style name="addTask_Constraint">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/rounded_corner_background_light_purple</item>
+        <item name="android:padding">10dp</item>
+        <item name="android:layout_marginTop">25dp</item>
+    </style>
+
+    <style name="addTask_DateTime_Constraint">
+        <item name="android:layout_margin">5dp</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">100dp</item>
+        <item name="android:background">@drawable/rounded_corner_background_light_purple</item>
+        <item name="android:padding">5dp</item>
+    </style>
+
+</resources>
