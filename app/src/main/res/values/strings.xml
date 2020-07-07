@@ -1,0 +1,98 @@
+<resources>
+    //to pass value from adapter to fragment from viewHolder
+    <item name="catId" type="id" />
+    <item name="catName" type="id" />
+    <item name="taskId" type="id" />
+    <item name="taskName" type="id" />
+    <item name="taskDetails" type="id" />
+    <!-- TODO: Remove or change this placeholder text -->
+
+    <string name="app_name">ToDo List</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="group_task">Category</string>
+    <string name="Important">Important</string>
+    <string name="done_task">Done Task</string>
+    <string name="delayed_task">Delayed Task</string>
+    <string name="searchicon">searchICON</string>
+    <string name="to_do">To-Do</string>
+    <string name="addgroupicon">addGroupICON</string>
+    <string name="nothing_to_do">Nothing To Do?</string>
+    <string name="add_category">Add Category</string>
+    <string name="tasks_are_not_delayed_yet">Tasks are not delayed yet!</string>
+    <string name="tasks_are_not_completed_yet">Complete the Task!</string>
+    <string name="mark_group_as_important">Mark categories as Important!</string>
+    <string name="choose_your_list_group">Choose your categories</string>
+    <string name="selection_for_you_to_get_started">Selection for you \nto get started</string>
+    <string name="groceries">Groceries</string>
+    <string name="movies_to_watch">Movies to watch</string>
+    <string name="travel">Travel</string>
+    <string name="sports">Sports</string>
+    <string name="work">Work</string>
+    <string name="categories_not_selected">Categories were not selected!</string>
+    <string name="category_updated">Category name edited</string>
+    <string name="categories_added">Categories been added!</string>
+    <string name="canceled">Canceled!</string>
+    <string name="cancel">Cancel</string>
+    <string name="edit">Edit</string>
+    <string name="add">Add</string>
+    <string name="get_started">Get Started</string>
+    <string name="category_name">Category Name</string>
+
+    <string name="enter_category_name">Enter category name...</string>
+    <string name="please_press_back">Please click BACK again to exit</string>
+    <string name="what_task_to_do">What Task to do?</string>
+    <string name="date_to_set">Date to set</string>
+    <string name="time_to_set">Time to set</string>
+    <string name="priority">Priority  :</string>
+    <string name="set_alarm">Set Alarm</string>
+    <string name="repeat">Repeat  :</string>
+    <string name="monday">Monday</string>
+    <string name="tuseday">Tuseday</string>
+    <string name="wednesday">Wednesday</string>
+    <string name="thursday">Thursday</string>
+    <string name="friday">friday</string>
+    <string name="saturday">Saturday</string>
+    <string name="sunday">Sunday</string>
+    <string name="daily">Daily</string>
+    <string name="dash">--</string>
+    <string name="task_diddnt_added">Task did not added!</string>
+    <string name="add_task">Add Task</string>
+    <string name="done">Done</string>
+    <string name="dismiss">Dismiss</string>
+    <string name="clear_all">Clear All</string>
+    <string name="once">Once</string>
+    <string name="dont_want_to_add_task">Don\'t want to add task?</string>
+    <string name="dont_add">Don\'t add!</string>
+    <string name="high">High</string>
+    <string name="medium">Medium</string>
+    <string name="low">Low</string>
+    <string name="task_name">Task Name</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="updated">Updated</string>
+    <string name="deleted">Deleted!</string>
+    <string name="added">Added</string>
+    <string name="created">Created</string>
+    <string name="all_task">All Task</string>
+    <string name="early_Tasks">Early Tasks</string>
+    <string name="alphabetically">Alphabetically</string>
+    <string name="delayed">Delayed</string>
+    <string name="priority_high">Priority High</string>
+    <string name="priority_med">Priority Medium</string>
+    <string name="priority_low">Priority Low</string>
+    <string name="filter">Filter</string>
+    <string name="no_tasks_are_delayed_yet">" Tasks are delayed yet!"</string>
+    <string name="category_Name">Category Name</string>
+    <string name="date">06/12/1995</string>
+    <string name="time">02:15 PM</string>
+    <string name="none">None</string>
+    <string name="set_Date_Time">Set Date &amp; Time</string>
+    <string name="date_dash">--/--/----</string>
+    <string name="time_dash">--:-- AM/PM</string>
+    <string name="want_to_add_something">Want to add something?</string>
+    <string name="all_categories">All Categories</string>
+    <string name="search">Search</string>
+    <string name="delete">Delete</string>
+    <string name="all_categories_deleted">All Categories Deleted!</string>
+
+</resources>

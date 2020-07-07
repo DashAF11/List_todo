@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/dark_purple_background"
+    android:paddingStart="5dp"
+    android:paddingEnd="5dp"
+    tools:context=".Fragments.TaskFragment">
+
+    <ImageView
+        android:id="@+id/filter_ImageView"
+        android:layout_width="50dp"
+        android:layout_height="45dp"
+        android:layout_marginTop="5dp"
+        android:padding="10dp"
+        android:src="@drawable/filter_icon"
+        app:layout_constraintEnd_toStartOf="@+id/addTask_ImageView"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/addTask_ImageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:src="@drawable/add_icon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/task_categoryName_TextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:text="@string/dash"
+        android:textColor="@color/white"
+        android:textSize="@dimen/textXL"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/filter_ImageView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/rounded_corner_background_white_radius_25dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.444"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/addTask_ImageView">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/empty_Constraint"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/addEmptyTask_ImageView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/add_icon_purple"
+                app:layout_constraintEnd_toEndOf="@+id/addTask_Empty_TextView"
+                app:layout_constraintStart_toStartOf="@+id/addTask_Empty_TextView"
+                app:layout_constraintTop_toBottomOf="@+id/addTask_Empty_TextView" />
+
+            <TextView
+                android:id="@+id/addTask_Empty_TextView"
+                style="@style/empty_TextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:text="@string/add_task"
+                android:visibility="visible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/taskRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="5dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:listitem="@layout/task_recyclerview_layout" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/filter_Hider_Constraint"
+        style="@style/popupDialog_Background_Style"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/rounded_corner_border_dark_purple"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <ImageView
+            android:id="@+id/closeFilter_ImageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/close_darkpurple_icon"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/filter_TextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/filter"
+            android:textSize="@dimen/textL"
+            android:textStyle="normal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/radio_Constraint"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/rounded_corner_background_white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/filter_TextView">
+
+            <RadioGroup
+                android:id="@+id/filter_radioGroup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <RadioButton
+                    android:id="@+id/allTask_RadioButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/dark_purple_background"
+                    android:buttonTint="@color/dark_purple_background"
+                    android:text="@string/all_task"
+                    android:textColor="@color/gray"
+                    android:textStyle="normal" />
+
+                <RadioButton
+                    android:id="@+id/datewiseTask_RadioButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/dark_purple_background"
+                    android:buttonTint="@color/dark_purple_background"
+                    android:text="@string/early_Tasks"
+                    android:textColor="@color/gray"
+                    android:textStyle="normal" />
+
+                <RadioButton
+                    android:id="@+id/alphabeticallyTask_RadioButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/dark_purple_background"
+                    android:buttonTint="@color/dark_purple_background"
+                    android:text="@string/alphabetically"
+                    android:textColor="@color/gray"
+                    android:textStyle="normal" />
+
+                <RadioButton
+                    android:id="@+id/delayedTask_RadioButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/dark_purple_background"
+                    android:buttonTint="@color/dark_purple_background"
+                    android:text="@string/delayed"
+                    android:textColor="@color/gray"
+                    android:textStyle="normal" />
+
+                <RadioButton
+                    android:id="@+id/doneTask_RadioButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/dark_purple_background"
+                    android:buttonTint="@color/dark_purple_background"
+                    android:text="@string/done"
+                    android:textColor="@color/gray"
+                    android:textStyle="normal" />
+
+                <RadioButton
+                    android:id="@+id/priorityHigh_RadioButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/dark_purple_background"
+                    android:buttonTint="@color/dark_purple_background"
+                    android:text="@string/priority_high"
+                    android:textColor="@color/gray"
+                    android:textStyle="normal" />
+
+                <RadioButton
+                    android:id="@+id/priorityMed_RadioButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/dark_purple_background"
+                    android:buttonTint="@color/dark_purple_background"
+                    android:text="@string/priority_med"
+                    android:textColor="@color/gray"
+                    android:textStyle="normal" />
+
+                <RadioButton
+                    android:id="@+id/priorityLow_RadioButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/dark_purple_background"
+                    android:buttonTint="@color/dark_purple_background"
+                    android:text="@string/priority_low"
+                    android:textColor="@color/gray"
+                    android:textStyle="normal" />
+
+            </RadioGroup>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+

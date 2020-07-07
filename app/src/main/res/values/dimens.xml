@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- page indicator-->
+    // Margins
+    <dimen name="margin_small">8dp</dimen>
+    <dimen name="margin_medium">16dp</dimen>
+    <dimen name="margin_large">24dp</dimen>
+    <dimen name="margin_xlarge">36dp</dimen>
+    <dimen name="small_text_size">12sp</dimen>
+    <dimen name="dialog_heading_text_size">20dp</dimen>
+
+    // Padding
+    <dimen name="padding_small">3dp</dimen>
+    <dimen name="padding_medium">5dp</dimen>
+    <dimen name="padding_large">8dp</dimen>
+
+    // Card Layout
+    <dimen name="cardRadius">15dp</dimen>
+    <dimen name="cardElevation">8dp</dimen>
+    <dimen name="card_view_radius">8dp</dimen>
+
+    <dimen name="tab_height">48dp</dimen>
+    <dimen name="header_bar_height">72dp</dimen>
+
+    <dimen name="margin_standard">16dp</dimen>
+    <dimen name="margin_short">8dp</dimen>
+    <dimen name="margin_extra_short">4dp</dimen>
+
+    <!-- Default screen margins, per the Android Design guidelines. -->
+
+    <dimen name="dp_3">3dp</dimen>
+    <dimen name="dp_8">8dp</dimen>
+    <dimen name="dp_10">10dp</dimen>
+    <dimen name="dp_5">5dp</dimen>
+    <dimen name="dp_15">15dp</dimen>
+    <dimen name="dp_12">12dp</dimen>
+    <dimen name="sp_14">14sp</dimen>
+    <dimen name="sp_12">12sp</dimen>
+    <dimen name="sp_15">15sp</dimen>
+    <dimen name="sp_17">17sp</dimen>
+    <dimen name="sp_18">18sp</dimen>
+    <dimen name="sp_20">20sp</dimen>
+    <dimen name="dp_20">20dp</dimen>
+    <dimen name="dp_25">25dp</dimen>
+    <dimen name="dp_30">30dp</dimen>
+    <dimen name="dp_40">40dp</dimen>
+    <dimen name="dp_50">50dp</dimen>
+    <dimen name="dp_55">55dp</dimen>
+    <dimen name="dp_60">60dp</dimen>
+
+    <dimen name="margin_1">15dp</dimen>
+    <dimen name="margin_2">25dp</dimen>
+    <dimen name="margin_3">60dp</dimen>
+
+    <!-- Margins -->
+    <dimen name="marginXS">4dp</dimen>
+    <dimen name="marginS">8dp</dimen>
+    <dimen name="marginM">16dp</dimen>
+    <dimen name="marginL">24dp</dimen>
+    <dimen name="marginXL">32dp</dimen>
+    <dimen name="marginXXL">48dp</dimen>
+
+    <!-- Text -->
+    <dimen name="textXS">14sp</dimen>
+    <dimen name="textSmall">16sp</dimen>
+    <dimen name="textS">18sp</dimen>
+    <dimen name="textM">20sp</dimen>
+    <dimen name="textL">22sp</dimen>
+    <dimen name="textXL">24sp</dimen>
+    <dimen name="textXXL">26sp</dimen>
+    <dimen name="textXXXL">28sp</dimen>
+    <dimen name="textXXXXL">30sp</dimen>
+    <dimen name="textXXXXXL">32sp</dimen>
+    <dimen name="textDialogButton">20sp</dimen>
+    <dimen name="text_beat_numbers">26sp</dimen>
+
+    <!-- Paddings -->
+    <dimen name="paddingXS">4dp</dimen>
+    <dimen name="paddingS">8dp</dimen>
+    <dimen name="paddingM">12dp</dimen>
+    <dimen name="paddingL">16dp</dimen>
+    <dimen name="paddingXL">20dp</dimen>
+    <dimen name="paddingXXL">24dp</dimen>
+
+    <!-- Card -->
+    <dimen name="card_radius">30dp</dimen>
+    <dimen name="card_elevation">4dp</dimen>
+
+
+</resources>
