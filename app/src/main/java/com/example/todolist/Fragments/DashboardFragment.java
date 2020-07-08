@@ -10,14 +10,6 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import com.example.todolist.Entities.CategoryEntity;
-import com.example.todolist.R;
-import com.example.todolist.ViewModel.CategoryViewModel;
-import com.shashank.sony.fancytoastlib.FancyToast;
-import com.shreyaspatil.MaterialDialog.BottomSheetMaterialDialog;
-
-import java.util.Calendar;
-
 import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -27,12 +19,23 @@ import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+
+import com.example.todolist.Entities.CategoryEntity;
+import com.example.todolist.R;
+import com.example.todolist.ViewModel.CategoryViewModel;
+import com.shashank.sony.fancytoastlib.FancyToast;
+import com.shreyaspatil.MaterialDialog.BottomSheetMaterialDialog;
+
+import java.util.Calendar;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class DashboardFragment extends Fragment {
 
+    @BindView(R.id.topName_TextView)
+    TextView topName_TextView;
     @BindView(R.id.group_TextView)
     TextView group_TextView;
     @BindView(R.id.delayed_TextView)
@@ -164,18 +167,22 @@ public class DashboardFragment extends Fragment {
     }
 
     public void groupClick() {
+        getTopName("Category");
         replaceFragment(R.id.dashBoard_container_frameLayout, CategoryFragment.newInstance(), CategoryFragment.class.getSimpleName(), null);
     }
 
     public void delayedClick() {
+        getTopName("Delayed Tasks");
         replaceFragment(R.id.dashBoard_container_frameLayout, DelayedTaskFragment.newInstance(), DelayedTaskFragment.class.getSimpleName(), null);
     }
 
     public void doneClick() {
+        getTopName("Done Tasks");
         replaceFragment(R.id.dashBoard_container_frameLayout, DoneTaskFragment.newInstance(), DoneTaskFragment.class.getSimpleName(), null);
     }
 
     public void favClick() {
+        getTopName("Important Category");
         replaceFragment(R.id.dashBoard_container_frameLayout, ImportantCategoryFragment.newInstance(), ImportantCategoryFragment.class.getSimpleName(), null);
     }
 
@@ -220,17 +227,17 @@ public class DashboardFragment extends Fragment {
         dialog.show();
     }
 
-    @OnClick(R.id.addCategory_ImageView)
+    @OnClick(R.id.addBoth_ImageView)
     public void addQuickDialogBox() {
         BottomSheetMaterialDialog mBottomSheetDialog = new BottomSheetMaterialDialog.Builder(getActivity())
 
                 .setTitle(getString(R.string.want_to_add_something))
                 .setCancelable(true)
-                .setPositiveButton(getString(R.string.add_task), R.drawable.add_icon, (dialogInterface, which) -> {
+                .setPositiveButton(getString(R.string.task), R.drawable.add_icon, (dialogInterface, which) -> {
                     addTask("Add Task");
                     dialogInterface.dismiss();
                 })
-                .setNegativeButton(getString(R.string.add_category), R.drawable.add_icon_purple, (dialogInterface, which) -> {
+                .setNegativeButton(getString(R.string.category), R.drawable.add_icon_purple, (dialogInterface, which) -> {
                     addCategory();
                     dialogInterface.dismiss();
                 })
@@ -247,7 +254,7 @@ public class DashboardFragment extends Fragment {
 
     public void getCategoryCount() {
         categoryViewModel.totalCategoryCount().observe(getViewLifecycleOwner(), count -> {
-          //  Timber.d("totalCategoryCount : " + count);
+            //  Timber.d("totalCategoryCount : " + count);
             categoryCount_TextView.setText("" + count);
         });
     }
@@ -255,25 +262,29 @@ public class DashboardFragment extends Fragment {
     public void getDelayedCount() {
         Calendar calendar = Calendar.getInstance();
         long currentTimeStamp = calendar.getTimeInMillis();
-       // Timber.d("currentTimeStamp : " + currentTimeStamp);
+        // Timber.d("currentTimeStamp : " + currentTimeStamp);
 
         taskViewModel.totalDelayTaskCount(currentTimeStamp).observe(getViewLifecycleOwner(), count -> {
-        //    Timber.d("totalDelayTaskCount : " + count);
+            //    Timber.d("totalDelayTaskCount : " + count);
             delayCount_TextView.setText("" + count);
         });
     }
 
     public void getDoneCount() {
         taskViewModel.totalDoneTaskCount().observe(getViewLifecycleOwner(), count -> {
-          //  Timber.d("totalDoneTaskCount : " + count);
+            //  Timber.d("totalDoneTaskCount : " + count);
             doneCount_TextView.setText("" + count);
         });
     }
 
     public void getImpCategoryCount() {
         categoryViewModel.totalImpCategoryCount().observe(getViewLifecycleOwner(), count -> {
-          //  Timber.d("totalImpCategoryCount : " + count);
+            //  Timber.d("totalImpCategoryCount : " + count);
             impCategoryCount_TextView.setText("" + count);
         });
+    }
+
+    void getTopName(String name) {
+        topName_TextView.setText(name);
     }
 }

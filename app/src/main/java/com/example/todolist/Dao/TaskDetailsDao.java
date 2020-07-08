@@ -1,9 +1,5 @@
 package com.example.todolist.Dao;
 
-import com.example.todolist.Entities.TaskDetailsEntity;
-
-import java.util.List;
-
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
@@ -11,6 +7,10 @@ import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
+
+import com.example.todolist.Entities.TaskDetailsEntity;
+
+import java.util.List;
 
 import static com.example.todolist.RoomDB.RoomTables.COLUMN_TASK_ALARM;
 import static com.example.todolist.RoomDB.RoomTables.COLUMN_TASK_CATID;
@@ -21,7 +21,6 @@ import static com.example.todolist.RoomDB.RoomTables.COLUMN_TASK_NAME;
 import static com.example.todolist.RoomDB.RoomTables.COLUMN_TASK_PRIORITY;
 import static com.example.todolist.RoomDB.RoomTables.COLUMN_TASK_TIME;
 import static com.example.todolist.RoomDB.RoomTables.COLUMN_TASK_TIMESTAMP;
-import static com.example.todolist.RoomDB.RoomTables.TABLE_CATEGORIES;
 import static com.example.todolist.RoomDB.RoomTables.TABLE_TASK;
 
 @Dao
@@ -46,7 +45,7 @@ public interface TaskDetailsDao {
     LiveData<List<TaskDetailsEntity>> getAllDoneTask_byCategoryLiveData(String doneStatus, long catId);
 
     @Query("SELECT * FROM " + TABLE_TASK
-            + " WHERE " + COLUMN_TASK_TIMESTAMP + "<=:currentTimeStamp"
+            + " WHERE " + COLUMN_TASK_TIMESTAMP + "<:currentTimeStamp"
             + " AND " + COLUMN_TASK_CATID + "=:catId")
     LiveData<List<TaskDetailsEntity>> getAllDelayTask_byCategoryLiveData(long currentTimeStamp, long catId);
 

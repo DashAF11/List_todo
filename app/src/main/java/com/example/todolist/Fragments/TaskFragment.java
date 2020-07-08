@@ -18,6 +18,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.NavController;
+import androidx.navigation.NavOptions;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -94,63 +95,10 @@ public class TaskFragment extends Fragment implements TaskDetailsAdapter.Recycle
     TaskDetailsAdapter taskDetailsAdapter;
     TaskDetailsDao taskDetailsDao;
     NavController navController;
+    NavOptions navOptions;
     TaskViewModel taskViewModel;
     long catId;
     String catName;
-    //swipe Left to delete_Task recyclerView
-    ItemTouchHelper.SimpleCallback swipetoEditTask = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
-        @Override
-        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder viewHolder1) {
-            return false;
-        }
-
-        @Override
-        public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
-            new RecyclerViewSwipeDecorator.Builder(getActivity(), c, recyclerView, viewHolder, dX / 4, dY, actionState, isCurrentlyActive)
-                    .addBackgroundColor(ContextCompat.getColor(getActivity(), R.color.dark_purple_background))
-                    .addActionIcon(R.drawable.edit_white_icon)
-                    .create()
-                    .decorate();
-            super.onChildDraw(c, recyclerView, viewHolder, dX / 4, dY, actionState, isCurrentlyActive);
-        }
-
-        @Override
-        public void onSwiped(@NonNull final RecyclerView.ViewHolder viewHolder, int i) {
-
-            TaskDetailsEntity detailsEntity = (TaskDetailsEntity) viewHolder.itemView.getTag(R.id.taskDetails);
-            Timber.d("detailsEntity : %s", detailsEntity.toString());
-
-            editDialogBox(detailsEntity);
-        }
-    };
-    //swipe Left to delete_Task recyclerView
-    ItemTouchHelper.SimpleCallback swipetoDeleteTask = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
-        @Override
-        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder viewHolder1) {
-            return false;
-        }
-
-        @Override
-        public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
-            new RecyclerViewSwipeDecorator.Builder(getActivity(), c, recyclerView, viewHolder, dX / 4, dY, actionState, isCurrentlyActive)
-                    .addBackgroundColor(ContextCompat.getColor(getActivity(), R.color.dark_purple_background))
-                    .addActionIcon(R.drawable.delete_white_icon)
-                    .create()
-                    .decorate();
-            super.onChildDraw(c, recyclerView, viewHolder, dX / 4, dY, actionState, isCurrentlyActive);
-        }
-
-        @Override
-        public void onSwiped(@NonNull final RecyclerView.ViewHolder viewHolder, int i) {
-
-            long catId = (long) viewHolder.itemView.getTag(R.id.catId),
-                    taskId = (long) viewHolder.itemView.getTag(R.id.taskId);
-            String taskName = String.valueOf(viewHolder.itemView.getTag(R.id.taskName));
-            Timber.d("taskName : %s", taskName);
-
-            deleteDialogBox(catId, taskId, taskName, "Delete " + taskName + "?", "Are you sure want to delete this task?", false);
-        }
-    };
 
     public static TaskFragment newInstance() {
         return new TaskFragment();
@@ -313,6 +261,61 @@ public class TaskFragment extends Fragment implements TaskDetailsAdapter.Recycle
         }
     }
 
+    //swipe Left to delete_Task recyclerView
+    ItemTouchHelper.SimpleCallback swipetoEditTask = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
+        @Override
+        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder viewHolder1) {
+            return false;
+        }
+
+        @Override
+        public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+            new RecyclerViewSwipeDecorator.Builder(getActivity(), c, recyclerView, viewHolder, dX / 4, dY, actionState, isCurrentlyActive)
+                    .addBackgroundColor(ContextCompat.getColor(getActivity(), R.color.dark_purple_background))
+                    .addActionIcon(R.drawable.edit_white_icon)
+                    .create()
+                    .decorate();
+            super.onChildDraw(c, recyclerView, viewHolder, dX / 4, dY, actionState, isCurrentlyActive);
+        }
+
+        @Override
+        public void onSwiped(@NonNull final RecyclerView.ViewHolder viewHolder, int i) {
+
+            TaskDetailsEntity detailsEntity = (TaskDetailsEntity) viewHolder.itemView.getTag(R.id.taskDetails);
+            Timber.d("detailsEntity : %s", detailsEntity.toString());
+
+            editDialogBox(detailsEntity);
+        }
+    };
+    //swipe Left to delete_Task recyclerView
+    ItemTouchHelper.SimpleCallback swipetoDeleteTask = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+        @Override
+        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder viewHolder1) {
+            return false;
+        }
+
+        @Override
+        public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+            new RecyclerViewSwipeDecorator.Builder(getActivity(), c, recyclerView, viewHolder, dX / 4, dY, actionState, isCurrentlyActive)
+                    .addBackgroundColor(ContextCompat.getColor(getActivity(), R.color.dark_purple_background))
+                    .addActionIcon(R.drawable.delete_white_icon)
+                    .create()
+                    .decorate();
+            super.onChildDraw(c, recyclerView, viewHolder, dX / 4, dY, actionState, isCurrentlyActive);
+        }
+
+        @Override
+        public void onSwiped(@NonNull final RecyclerView.ViewHolder viewHolder, int i) {
+
+            long catId = (long) viewHolder.itemView.getTag(R.id.catId),
+                    taskId = (long) viewHolder.itemView.getTag(R.id.taskId);
+            String taskName = String.valueOf(viewHolder.itemView.getTag(R.id.taskName));
+            Timber.d("taskName : %s", taskName);
+
+            deleteDialogBox(catId, taskId, taskName, "Delete " + taskName + "?", "Are you sure want to delete this task?", false);
+        }
+    };
+
     void toggleView(ConstraintLayout constraintLayout) {
         if (constraintLayout.getVisibility() == View.VISIBLE) {
             constraintLayout.setVisibility(View.GONE);
@@ -415,4 +418,9 @@ public class TaskFragment extends Fragment implements TaskDetailsAdapter.Recycle
         }
     }
 
+    @OnClick(R.id.navigatebackTask_ImageView)
+    void navigateBack() {
+        navOptions = new NavOptions.Builder().setPopUpTo(R.id.dashboardFragment, true).build();
+        navController.navigate(R.id.action_taskFragment_to_dashboardFragment, null, navOptions);
+    }
 }

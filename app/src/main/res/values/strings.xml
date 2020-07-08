@@ -17,7 +17,9 @@
     <string name="to_do">To-Do</string>
     <string name="addgroupicon">addGroupICON</string>
     <string name="nothing_to_do">Nothing To Do?</string>
+    <string name="category">Category</string>
     <string name="add_category">Add Category</string>
+    <string name="add_task">Add Task</string>
     <string name="tasks_are_not_delayed_yet">Tasks are not delayed yet!</string>
     <string name="tasks_are_not_completed_yet">Complete the Task!</string>
     <string name="mark_group_as_important">Mark categories as Important!</string>
@@ -36,7 +38,7 @@
     <string name="edit">Edit</string>
     <string name="add">Add</string>
     <string name="get_started">Get Started</string>
-    <string name="category_name">Category Name</string>
+    <string name="edit_category_name">Edit category name</string>
 
     <string name="enter_category_name">Enter category name...</string>
     <string name="please_press_back">Please click BACK again to exit</string>
@@ -56,7 +58,7 @@
     <string name="daily">Daily</string>
     <string name="dash">--</string>
     <string name="task_diddnt_added">Task did not added!</string>
-    <string name="add_task">Add Task</string>
+    <string name="task">Task</string>
     <string name="done">Done</string>
     <string name="dismiss">Dismiss</string>
     <string name="clear_all">Clear All</string>

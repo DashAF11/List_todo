@@ -18,7 +18,7 @@
     <TextView
         android:id="@+id/title_TextView"
         style="@style/popupDialog_Header_TextView"
-        android:text="@string/category_name"
+        android:text="@string/edit_category_name"
         app:layout_constraintBottom_toTopOf="@+id/categoryNameEdit_TextView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"

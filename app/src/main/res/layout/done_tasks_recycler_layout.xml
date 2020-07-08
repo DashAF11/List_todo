@@ -10,8 +10,6 @@
         android:id="@+id/task_constraint"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="3dp"
-        android:layout_marginEnd="3dp"
         android:background="@drawable/rounded_corner_background_light_green"
         android:padding="5dp"
         app:layout_constraintEnd_toEndOf="parent"

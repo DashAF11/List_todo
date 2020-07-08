@@ -38,6 +38,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -80,6 +81,7 @@ public class Task_Add_Edit_Fragment extends Fragment {
             taskAlarm = "false", mytimeHR_M, hr_forTS, minute_forTS, AM_PM;
     long taskTimeStamp, catId, taskId;
     int mYear, mMonth, mDay, mHour, mMinute, day_forTS, month_forTS, year_forTS;
+    boolean editTextClick = false;
     TaskViewModel taskViewModel;
     NavController navController;
     NavOptions navOptions;
@@ -196,6 +198,13 @@ public class Task_Add_Edit_Fragment extends Fragment {
                 taskAlarm = "true";
             } else {
                 taskAlarm = "false";
+            }
+        });
+
+        taskName_EditText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                editTextClick = true;
             }
         });
     }
@@ -414,11 +423,14 @@ public class Task_Add_Edit_Fragment extends Fragment {
         mBottomSheetDialog.show();
     }
 
-    public static void hideSoftKeyboard(Activity activity) {
-        InputMethodManager inputMethodManager =
-                (InputMethodManager) activity.getSystemService(
-                        Activity.INPUT_METHOD_SERVICE);
-        inputMethodManager.hideSoftInputFromWindow(
-                activity.getCurrentFocus().getWindowToken(), 0);
+    public void hideSoftKeyboard(Activity activity) {
+
+        if (editTextClick) {
+            InputMethodManager inputMethodManager =
+                    (InputMethodManager) activity.getSystemService(
+                            Activity.INPUT_METHOD_SERVICE);
+            inputMethodManager.hideSoftInputFromWindow(
+                    Objects.requireNonNull(activity.getCurrentFocus()).getWindowToken(), 0);
+        }
     }
 }
