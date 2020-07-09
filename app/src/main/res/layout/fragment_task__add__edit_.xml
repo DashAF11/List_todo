@@ -18,7 +18,7 @@
 
     <ImageView
         android:id="@+id/close_Task_ImageView"
-        android:layout_width="wrap_content"
+        android:layout_width="50dp"
         android:layout_height="wrap_content"
         android:padding="10dp"
         android:src="@drawable/back_arrow_icon"
@@ -86,6 +86,7 @@
                         android:src="@drawable/calender_icon"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.5"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/dateValue_TextView" />
 
@@ -94,7 +95,9 @@
                         style="@style/Task_SubText_TextView"
                         android:layout_marginTop="10dp"
                         android:text="@string/date_dash"
+                        app:layout_constraintBottom_toTopOf="@+id/date_ImageView"
                         app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.5"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/date_TextView" />
 
@@ -102,7 +105,9 @@
                         android:id="@+id/date_TextView"
                         style="@style/Task_Header_TextView"
                         android:text="@string/date_to_set"
+                        app:layout_constraintBottom_toTopOf="@+id/dateValue_TextView"
                         app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.5"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 

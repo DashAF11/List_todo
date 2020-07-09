@@ -50,6 +50,8 @@ public class TaskFragment extends Fragment implements TaskDetailsAdapter.Recycle
     @BindView(R.id.task_SearchView)
     SearchView task_SearchView;
 
+    @BindView(R.id.applyFilter_TextView)
+    TextView applyFilter_TextView;
     @BindView(R.id.searchTask_TextView)
     TextView searchTask_TextView;
     @BindView(R.id.deleteAllTask_TextView)
@@ -165,12 +167,7 @@ public class TaskFragment extends Fragment implements TaskDetailsAdapter.Recycle
             }
         });
 
-        delayedTask_CheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                delayedTask = isChecked;
-            }
-        });
+        delayedTask_CheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> delayedTask = isChecked);
 
         doneTask_CheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> doneTask = isChecked);
 
@@ -179,6 +176,12 @@ public class TaskFragment extends Fragment implements TaskDetailsAdapter.Recycle
         priorityMed_CheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> medTask = isChecked);
 
         priorityLow_CheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> lowTask = isChecked);
+
+        if (delayedTask||doneTask||highTask||medTask||lowTask){
+            applyFilter_TextView.setVisibility(View.VISIBLE);
+        }else {
+            applyFilter_TextView.setVisibility(View.GONE);
+        }
     }
 
     public void getAllTaskLiveData() {
@@ -197,10 +200,6 @@ public class TaskFragment extends Fragment implements TaskDetailsAdapter.Recycle
 
     @OnClick(R.id.applyFilter_TextView)
     void sortedTaskLiveData() {
-        getEveryThing();
-    }
-
-    public void getEveryThing() {
 
         selectionList = new ArrayList<>();
 
@@ -230,14 +229,12 @@ public class TaskFragment extends Fragment implements TaskDetailsAdapter.Recycle
             selectionList.add(null);
         }
 
-        if (selectionList.size() != 0) {
             Timber.d("SelectionList  : %s", selectionList.toString());
             taskViewModel.getEveryThing(catId, Long.parseLong(selectionList.get(0)), selectionList.get(1), selectionList.get(2),
                     selectionList.get(3), String.valueOf(selectionList.get(4))).observe(getViewLifecycleOwner(), taskDetailsEntities -> {
                 Timber.d("getEveryThing : Size : %d \nList : %s", taskDetailsEntities.size(), taskDetailsEntities.toString());
                 updateUI(taskDetailsEntities, getString(R.string.task_not_found_filter), true);
             });
-        }
         toggleView(filter_Hider_Constraint);
     }
 
