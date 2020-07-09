@@ -35,10 +35,8 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/group_Cons"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/bottomNavigation_Constraint"
             android:background="@drawable/rounded_corner_background_light_purple"
-            android:padding="@dimen/dp_5"
             app:layout_constraintEnd_toStartOf="@+id/delayed_Cons"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
@@ -49,8 +47,7 @@
                 style="@style/bottom_navigation_ImageView"
                 android:src="@drawable/menu_icon"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintStart_toStartOf="parent" />
 
             <TextView
                 android:id="@+id/group_TextView"
@@ -82,10 +79,8 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/delayed_Cons"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/bottomNavigation_Constraint"
             android:background="@drawable/rounded_corner_background_light_red"
-            android:padding="@dimen/dp_5"
             app:layout_constraintEnd_toStartOf="@+id/done_Cons"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/group_Cons"
@@ -96,8 +91,7 @@
                 style="@style/bottom_navigation_ImageView"
                 android:src="@drawable/delayed_icon"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintStart_toStartOf="parent" />
 
             <TextView
                 android:id="@+id/delayed_TextView"
@@ -130,10 +124,8 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/done_Cons"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/bottomNavigation_Constraint"
             android:background="@drawable/rounded_corner_background_light_green"
-            android:padding="@dimen/dp_5"
             app:layout_constraintEnd_toStartOf="@+id/imp_Cons"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/delayed_Cons"
@@ -144,8 +136,7 @@
                 style="@style/bottom_navigation_ImageView"
                 android:src="@drawable/done_icon"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintStart_toStartOf="parent" />
 
             <TextView
                 android:id="@+id/done_TextView"
@@ -178,10 +169,8 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/imp_Cons"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/bottomNavigation_Constraint"
             android:background="@drawable/rounded_corner_background_light_yellow"
-            android:padding="@dimen/dp_5"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/done_Cons"
@@ -192,8 +181,7 @@
                 style="@style/bottom_navigation_ImageView"
                 android:src="@drawable/important_icon"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintStart_toStartOf="parent" />
 
             <TextView
                 android:id="@+id/imp_TextView"
@@ -248,7 +236,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/AppName_TextView"
+            android:id="@+id/topName_TextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"

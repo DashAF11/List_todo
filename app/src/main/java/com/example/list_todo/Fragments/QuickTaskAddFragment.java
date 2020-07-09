@@ -152,7 +152,7 @@ public class QuickTaskAddFragment extends Fragment {
 
             count = categoryList.size();
 
-            ArrayAdapter<String> catname_Adapter = new ArrayAdapter<String>(getContext(),
+            ArrayAdapter<String> catname_Adapter = new ArrayAdapter<String>(getActivity(),
                     android.R.layout.simple_spinner_item, categoryList);
 
             catname_Adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);

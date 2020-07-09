@@ -2,34 +2,41 @@ package com.example.list_todo.Adapters;
 
 import android.content.Context;
 import android.graphics.Paint;
+import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.list_todo.Entities.TaskDetailsEntity;
 import com.example.list_todo.R;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import timber.log.Timber;
 
 import static android.graphics.Color.rgb;
 
-public class TaskDetailsAdapter extends RecyclerView.Adapter<TaskDetailsAdapter.ViewHolder> {
+public class TaskDetailsAdapter extends RecyclerView.Adapter<TaskDetailsAdapter.ViewHolder> implements Filterable {
 
     Context context;
     Calendar calendar = Calendar.getInstance();
     List<TaskDetailsEntity> detailsEntities;
+    List<TaskDetailsEntity> detailsSearchEntities;
     RecyclerClickListener clickListener;
 
     public TaskDetailsAdapter(Context context, RecyclerClickListener clickListener) {
@@ -39,7 +46,8 @@ public class TaskDetailsAdapter extends RecyclerView.Adapter<TaskDetailsAdapter.
 
     public void setTaskList(List<TaskDetailsEntity> taskDetailsEntities) {
         this.detailsEntities = taskDetailsEntities;
-        Timber.d("categoryEntities_Size : %s", detailsEntities.size());
+        this.detailsSearchEntities = new ArrayList<>(taskDetailsEntities);
+        //Timber.d("categoryEntities_Size : %s", detailsEntities.size());
         this.notifyDataSetChanged();
     }
 
@@ -64,7 +72,7 @@ public class TaskDetailsAdapter extends RecyclerView.Adapter<TaskDetailsAdapter.
             holder.taskTime_TextView.setVisibility(View.GONE);
         } else {
             boolean today = DateUtils.isToday(detailsEntities.get(position).getTimestamp());
-            Timber.d("isToday : " + today);
+            //Timber.d("isToday : " + today);
             if (today) {
                 holder.taskDate_TextView.setText("Today");
             } else {
@@ -121,6 +129,40 @@ public class TaskDetailsAdapter extends RecyclerView.Adapter<TaskDetailsAdapter.
     public int getItemCount() {
         return detailsEntities.size();
     }
+
+    @Override
+    public Filter getFilter() {
+        return filter;
+    }
+
+    Filter filter = new Filter() {
+        @Override
+        protected FilterResults performFiltering(CharSequence charSequence) {
+
+            List<TaskDetailsEntity> filterList = new ArrayList<>();
+
+            if (charSequence == null || charSequence.length() == 0) {
+                filterList.addAll(detailsSearchEntities);
+            } else {
+                for (TaskDetailsEntity taskDetailsEntity : detailsSearchEntities) {
+                    if ( taskDetailsEntity.getTask_name().toLowerCase().contains(charSequence.toString().toLowerCase())) {
+                        filterList.add(taskDetailsEntity);
+                    }
+                }
+            }
+
+            FilterResults filterResults = new FilterResults();
+            filterResults.values = filterList;
+            return filterResults;
+        }
+
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+            detailsEntities.clear();
+            detailsEntities.addAll((Collection<? extends TaskDetailsEntity>) results.values);
+            notifyDataSetChanged();
+        }
+    };
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 

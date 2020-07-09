@@ -1,6 +1,8 @@
 package com.example.list_todo.Entities;
 
+import android.annotation.SuppressLint;
 import android.os.Parcel;
+import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
@@ -18,8 +20,9 @@ import static com.example.list_todo.RoomDB.RoomTables.COLUMN_TASK_PRIORITY;
 import static com.example.list_todo.RoomDB.RoomTables.COLUMN_TASK_TIME;
 import static com.example.list_todo.RoomDB.RoomTables.COLUMN_TASK_TIMESTAMP;
 
+@SuppressLint("ParcelCreator")
 @Entity(tableName = "task_table")
-public class TaskDetailsEntity {
+public class TaskDetailsEntity implements Parcelable {
 
     @NonNull
     @PrimaryKey(autoGenerate = true)
@@ -149,5 +152,15 @@ public class TaskDetailsEntity {
                 ", task_catID=" + task_catID +
                 ", task_catName='" + task_catName + '\'' +
                 '}';
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+
     }
 }

@@ -40,34 +40,22 @@ public interface TaskDetailsDao {
             + " WHERE " + COLUMN_TASK_CATID + "=:catId")
     LiveData<List<TaskDetailsEntity>> getAllTasksLiveData(long catId);
 
-    @Query("SELECT * FROM " + TABLE_TASK
-            + " WHERE " + COLUMN_TASK_DONE_STATUS + "=:doneStatus"
-            + " AND " + COLUMN_TASK_CATID + "=:catId")
-    LiveData<List<TaskDetailsEntity>> getAllDoneTask_byCategoryLiveData(String doneStatus, long catId);
+    @Query(" SELECT  * FROM task_table" +
+            " WHERE  task_catid =:catID " +
 
-    @Query("SELECT * FROM " + TABLE_TASK
-            + " WHERE " + COLUMN_TASK_TIMESTAMP + "<=:currentTimeStamp"
-            + " AND " + COLUMN_TASK_CATID + "=:catId")
-    LiveData<List<TaskDetailsEntity>> getAllDelayTask_byCategoryLiveData(long currentTimeStamp, long catId);
+            " AND (( :timestamp IS NULL ) OR (task_timestamp <:timestamp ) ) " +
+            " AND (( :status IS NULL ) OR (task_done_status =:status ) )" +
+
+            " AND ((( :priority IS NULL ) OR (task_priority =:priority) )  " +
+            " OR (( :priority2 IS NULL ) OR (task_priority =:priority2) )  " +
+            " OR (( :priority3 IS NULL ) OR (task_priority =:priority3) ) )" +
+
+            " ORDER BY task_timestamp DESC")
+    LiveData<List<TaskDetailsEntity>> getEveryThing(long catID, long timestamp, String status, String priority, String priority2, String priority3);
 
     @Query("SELECT * FROM " + TABLE_TASK
             + " WHERE " + COLUMN_TASK_TIMESTAMP + "<:currentTimeStamp")
     LiveData<List<TaskDetailsEntity>> getAllDelayTaskLiveData(long currentTimeStamp);
-
-    @Query("SELECT * FROM " + TABLE_TASK
-            + " WHERE " + COLUMN_TASK_PRIORITY + "=:priority"
-            + " AND " + COLUMN_TASK_CATID + "=:catId")
-    LiveData<List<TaskDetailsEntity>> getAllTaskPriorityWiseLiveData(String priority, long catId);
-
-    @Query("SELECT * FROM " + TABLE_TASK
-            + " WHERE " + COLUMN_TASK_CATID + "=:catId"
-            + " ORDER BY " + COLUMN_TASK_TIMESTAMP + " ASC ")
-    LiveData<List<TaskDetailsEntity>> getAllTaskTimeStampWise_byCategoryLiveData(long catId);
-
-    @Query("SELECT * FROM " + TABLE_TASK
-            + " WHERE " + COLUMN_TASK_CATID + "=:catId"
-            + " ORDER BY " + COLUMN_TASK_NAME)
-    LiveData<List<TaskDetailsEntity>> getAllTaskAlphabetically_byCategoryLiveData(long catId);
 
     @Query(" UPDATE " + TABLE_TASK
             + " SET " + COLUMN_TASK_DONE_STATUS + "=:status"

@@ -1,6 +1,7 @@
 package com.example.list_todo.Fragments;
 
 import android.app.Dialog;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,6 +34,8 @@ import butterknife.OnClick;
 
 public class DashboardFragment extends Fragment {
 
+    @BindView(R.id.topName_TextView)
+    TextView topName_TextView;
     @BindView(R.id.group_TextView)
     TextView group_TextView;
     @BindView(R.id.delayed_TextView)
@@ -68,7 +71,9 @@ public class DashboardFragment extends Fragment {
     TaskViewModel taskViewModel;
     Calendar calendar;
     long timeStamp;
+    String topName;
     NavController navController;
+    SharedPreferences spfUser;
 
     public static DashboardFragment newInstance() {
 //        DashboardFragment fragment = new DashboardFragment();
@@ -117,6 +122,11 @@ public class DashboardFragment extends Fragment {
         getDelayedCount();
         getDoneCount();
         getImpCategoryCount();
+
+        //spfUser = getActivity().getSharedPreferences(StorageConstants.KEY_DETAILS, Context.MODE_PRIVATE);
+        // topName = spfUser.getString(KEY_TOPNAME, "Category");
+        topName_TextView.setText("Category");
+        //Timber.d("SharedPref : topName : %s", topName);
     }
 
     private void toggleView(TextView textView) {
@@ -129,6 +139,8 @@ public class DashboardFragment extends Fragment {
 
     @OnClick(R.id.group_ImageView)
     public void toggleGroup() {
+//        spfUser.edit().putString(KEY_TOPNAME, "Category").apply();
+        topName_TextView.setText("Category");
         toggleView(group_TextView);
         delayed_TextView.setVisibility(View.GONE);
         done_TextView.setVisibility(View.GONE);
@@ -138,6 +150,8 @@ public class DashboardFragment extends Fragment {
 
     @OnClick(R.id.delayed_ImageView)
     public void toggleDelayed() {
+//        spfUser.edit().putString(KEY_TOPNAME, "Delayed").apply();
+        topName_TextView.setText("Delayed");
         toggleView(delayed_TextView);
         group_TextView.setVisibility(View.GONE);
         done_TextView.setVisibility(View.GONE);
@@ -147,6 +161,8 @@ public class DashboardFragment extends Fragment {
 
     @OnClick(R.id.done_ImageView)
     public void toggleDone() {
+//        spfUser.edit().putString(KEY_TOPNAME, "Done").apply();
+        topName_TextView.setText("Done");
         toggleView(done_TextView);
         group_TextView.setVisibility(View.GONE);
         delayed_TextView.setVisibility(View.GONE);
@@ -156,6 +172,8 @@ public class DashboardFragment extends Fragment {
 
     @OnClick(R.id.imp_ImageView)
     public void toggleImp() {
+//        spfUser.edit().putString(KEY_TOPNAME, "Important").apply();
+        topName_TextView.setText("Important");
         toggleView(imp_TextView);
         group_TextView.setVisibility(View.GONE);
         delayed_TextView.setVisibility(View.GONE);
@@ -247,7 +265,7 @@ public class DashboardFragment extends Fragment {
 
     public void getCategoryCount() {
         categoryViewModel.totalCategoryCount().observe(getViewLifecycleOwner(), count -> {
-          //  Timber.d("totalCategoryCount : " + count);
+            //  Timber.d("totalCategoryCount : " + count);
             categoryCount_TextView.setText("" + count);
         });
     }
@@ -255,24 +273,24 @@ public class DashboardFragment extends Fragment {
     public void getDelayedCount() {
         Calendar calendar = Calendar.getInstance();
         long currentTimeStamp = calendar.getTimeInMillis();
-       // Timber.d("currentTimeStamp : " + currentTimeStamp);
+        // Timber.d("currentTimeStamp : " + currentTimeStamp);
 
         taskViewModel.totalDelayTaskCount(currentTimeStamp).observe(getViewLifecycleOwner(), count -> {
-        //    Timber.d("totalDelayTaskCount : " + count);
+            //    Timber.d("totalDelayTaskCount : " + count);
             delayCount_TextView.setText("" + count);
         });
     }
 
     public void getDoneCount() {
         taskViewModel.totalDoneTaskCount().observe(getViewLifecycleOwner(), count -> {
-          //  Timber.d("totalDoneTaskCount : " + count);
+            //  Timber.d("totalDoneTaskCount : " + count);
             doneCount_TextView.setText("" + count);
         });
     }
 
     public void getImpCategoryCount() {
         categoryViewModel.totalImpCategoryCount().observe(getViewLifecycleOwner(), count -> {
-          //  Timber.d("totalImpCategoryCount : " + count);
+            //  Timber.d("totalImpCategoryCount : " + count);
             impCategoryCount_TextView.setText("" + count);
         });
     }
