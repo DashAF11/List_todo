@@ -5,12 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.todolist.Adapters.DoneAdpater;
-import com.example.todolist.Entities.TaskDetailsEntity;
-import com.example.todolist.R;
-
-import java.util.List;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -19,6 +13,14 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.todolist.Adapters.DoneAdpater;
+import com.example.todolist.Entities.TaskDetailsEntity;
+import com.example.todolist.R;
+import com.example.todolist.ViewModel.TaskViewModel;
+
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import timber.log.Timber;

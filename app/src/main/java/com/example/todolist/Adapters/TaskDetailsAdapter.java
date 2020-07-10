@@ -26,7 +26,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import timber.log.Timber;
 
 import static android.graphics.Color.rgb;
 
@@ -46,7 +45,7 @@ public class TaskDetailsAdapter extends RecyclerView.Adapter<TaskDetailsAdapter.
     public void setTaskList(List<TaskDetailsEntity> taskDetailsEntities) {
         this.detailsEntities = taskDetailsEntities;
         this.detailsSearchEntities = new ArrayList<>(taskDetailsEntities);
-        Timber.d("categoryEntities_Size : %s", detailsEntities.size());
+        //Timber.d("categoryEntities_Size : %s", detailsEntities.size());
         this.notifyDataSetChanged();
     }
 
@@ -71,7 +70,7 @@ public class TaskDetailsAdapter extends RecyclerView.Adapter<TaskDetailsAdapter.
             holder.taskTime_TextView.setVisibility(View.GONE);
         } else {
             boolean today = DateUtils.isToday(detailsEntities.get(position).getTimestamp());
-            Timber.d("isToday : " + today);
+            //Timber.d("isToday : " + today);
             if (today) {
                 holder.taskDate_TextView.setText("Today");
             } else {
@@ -158,7 +157,6 @@ public class TaskDetailsAdapter extends RecyclerView.Adapter<TaskDetailsAdapter.
 
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
-
             detailsEntities.clear();
             detailsEntities.addAll((Collection<? extends TaskDetailsEntity>) results.values);
             notifyDataSetChanged();

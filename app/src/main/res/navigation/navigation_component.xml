@@ -17,7 +17,7 @@
             android:id="@+id/action_dashboardFragment_to_taskFragment"
             app:destination="@id/taskFragment" />
         <action
-            android:id="@+id/action_dashboardFragment_to_calendarViewFragment2"
+            android:id="@+id/action_dashboardFragment_to_calendarViewFragment"
             app:destination="@id/calendarViewFragment2" />
         <action
             android:id="@+id/action_dashboardFragment_to_quickTaskAddFragment"
@@ -76,12 +76,26 @@
             android:name="taskDetails"
             app:argType="com.example.todolist.Entities.TaskDetailsEntity"
             app:nullable="true" />
+        <action
+            android:id="@+id/action_task_Add_Edit_Fragment_to_calendarViewFragment2"
+            app:destination="@id/calendarViewFragment2" />
+        <argument
+            android:name="fromCalendar"
+            app:argType="boolean"
+            android:defaultValue="false" />
     </fragment>
     <fragment
         android:id="@+id/calendarViewFragment2"
         android:name="com.example.todolist.Fragments.CalendarViewFragment"
         android:label="calendar_view_fragment"
-        tools:layout="@layout/calendar_view_fragment" />
+        tools:layout="@layout/calendar_view_fragment" >
+        <action
+            android:id="@+id/action_calendarViewFragment2_to_task_Add_Edit_Fragment"
+            app:destination="@id/task_Add_Edit_Fragment" />
+        <action
+            android:id="@+id/action_calendarViewFragment2_to_dashboardFragment"
+            app:destination="@id/dashboardFragment" />
+    </fragment>
     <fragment
         android:id="@+id/quickTaskAddFragment"
         android:name="com.example.todolist.Fragments.QuickTaskAddFragment"

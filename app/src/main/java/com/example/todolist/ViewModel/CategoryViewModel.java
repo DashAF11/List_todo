@@ -2,16 +2,17 @@ package com.example.todolist.ViewModel;
 
 import android.app.Application;
 
+import androidx.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+
 import com.example.todolist.Dao.CategoryDao;
 import com.example.todolist.Entities.CategoryEntity;
 import com.example.todolist.RoomDB.RoomDB;
 
 import java.util.List;
 
-import androidx.annotation.NonNull;
-import androidx.lifecycle.AndroidViewModel;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 import io.reactivex.Completable;
 import io.reactivex.CompletableObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -196,11 +197,11 @@ public class CategoryViewModel extends AndroidViewModel {
 
     }
 
-    public void updateFavouriteCategory(long catId, String favourite) {
+    public void updateImpCategory(long catId, String imp) {
 
         Completable.fromAction(() -> {
 
-            categoryDao.updateFavouriteCategory(catId, favourite);
+            categoryDao.updateImpCategory(catId, imp);
 
         }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

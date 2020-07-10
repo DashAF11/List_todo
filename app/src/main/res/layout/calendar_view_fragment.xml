@@ -1,15 +1,150 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/dark_purple_background"
     tools:context=".Fragments.CalendarViewFragment">
 
-    <TextView
-        android:textSize="34sp"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Calendar View" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/backCalender_ImageView"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="7dp"
+            android:padding="5dp"
+            android:src="@drawable/back_arrow_icon"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/topHeader_TextView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="@string/calender_view"
+            android:textColor="@color/white"
+            android:textSize="@dimen/textXL"
+            android:textStyle="normal"
+            app:layout_constraintStart_toEndOf="@+id/backCalender_ImageView"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginStart="@dimen/dp_5"
+            android:layout_marginTop="13dp"
+            android:layout_marginEnd="@dimen/dp_5"
+            android:background="@drawable/rounded_corner_background_white_radius_25dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/topHeader_TextView">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/calendar_Constraint"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:background="@drawable/rounded_corner_background_light_purple"
+                android:padding="10dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:id="@+id/monthName_TextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Month"
+                    android:textColor="@color/dark_purple_background"
+                    android:textSize="@dimen/textM"
+                    android:textStyle="normal"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:background="@drawable/rounded_corner_background_white"
+                    app:layout_constraintTop_toBottomOf="@+id/monthName_TextView">
+
+                    <com.github.sundeepk.compactcalendarview.CompactCalendarView
+                        android:id="@+id/CalendarView"
+                        android:layout_width="0dp"
+                        android:layout_height="220dp"
+                        android:layout_margin="5dp"
+                        android:hapticFeedbackEnabled="true"
+                        app:compactCalendarBackgroundColor="@color/white"
+                        app:compactCalendarCurrentDayBackgroundColor="@color/light_purple_background"
+                        app:compactCalendarCurrentDayIndicatorStyle="no_fill_large_indicator"
+                        app:compactCalendarCurrentDayTextColor="@color/black"
+                        app:compactCalendarCurrentSelectedDayBackgroundColor="@color/dark_purple_background"
+                        app:compactCalendarCurrentSelectedDayIndicatorStyle="fill_large_indicator"
+
+                        app:compactCalendarCurrentSelectedDayTextColor="@color/white"
+                        app:compactCalendarEventIndicatorStyle="small_indicator"
+
+                        app:compactCalendarTargetHeight="250dp"
+                        app:compactCalendarTextColor="@color/black"
+                        app:compactCalendarTextSize="12sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/empty_calendarConstraint"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="5dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/calendar_Constraint">
+
+                <TextView
+                    style="@style/empty_TextView"
+                    android:text="@string/tasks_are_not_found"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/calendarRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="5dp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/calendar_Constraint"
+                tools:listitem="@layout/calendar_recyclerview_layout" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 </FrameLayout>

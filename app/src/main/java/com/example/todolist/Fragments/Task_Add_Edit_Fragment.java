@@ -31,6 +31,7 @@ import androidx.navigation.Navigation;
 
 import com.example.todolist.Entities.TaskDetailsEntity;
 import com.example.todolist.R;
+import com.example.todolist.ViewModel.TaskViewModel;
 import com.shashank.sony.fancytoastlib.FancyToast;
 import com.shreyaspatil.MaterialDialog.BottomSheetMaterialDialog;
 
@@ -81,10 +82,10 @@ public class Task_Add_Edit_Fragment extends Fragment {
             taskAlarm = "false", mytimeHR_M, hr_forTS, minute_forTS, AM_PM;
     long taskTimeStamp, catId, taskId;
     int mYear, mMonth, mDay, mHour, mMinute, day_forTS, month_forTS, year_forTS;
-    boolean editTextClick = false;
+    boolean editTextClick = false, check, fromCalendar;
     TaskViewModel taskViewModel;
     NavController navController;
-    NavOptions navOptions;
+    NavOptions navOptions, navOptions2;
     TaskDetailsEntity taskDetailsEntity = new TaskDetailsEntity();
 
     @Override
@@ -109,6 +110,7 @@ public class Task_Add_Edit_Fragment extends Fragment {
             headerText = args.getHeaderName();
             catId = args.getCatId();
             catName = args.getCatName();
+            fromCalendar = args.getFromCalendar();
             headerTask_TextView.setText(headerText);
 
             TaskDetailsEntity taskDetailsEntity = args.getTaskDetails();
@@ -171,6 +173,7 @@ public class Task_Add_Edit_Fragment extends Fragment {
 
         navController = Navigation.findNavController(view);
         navOptions = new NavOptions.Builder().setPopUpTo(R.id.taskFragment, true).build();
+        navOptions2 = new NavOptions.Builder().setPopUpTo(R.id.calendarViewFragment2, true).build();
 
         taskViewModel = ViewModelProviders.of(this).get(TaskViewModel.class);
 
@@ -216,8 +219,9 @@ public class Task_Add_Edit_Fragment extends Fragment {
 
     @OnClick(R.id.date_Constraint)
     public void dateClick() {
-        hideSoftKeyboard(getActivity());
-
+        if (check) {
+            hideSoftKeyboard(getActivity());
+        }
         final Calendar c = Calendar.getInstance();
         mYear = c.get(Calendar.YEAR);
         mMonth = c.get(Calendar.MONTH);
@@ -251,7 +255,9 @@ public class Task_Add_Edit_Fragment extends Fragment {
 
     @OnClick(R.id.time_Constraint)
     public void timeClick() {
-        hideSoftKeyboard(getActivity());
+        if (check) {
+            hideSoftKeyboard(getActivity());
+        }
 
         final Calendar c = Calendar.getInstance();
         mHour = c.get(Calendar.HOUR_OF_DAY);
@@ -381,14 +387,20 @@ public class Task_Add_Edit_Fragment extends Fragment {
         if (check) {
             if (headerText.equals("Edit Task")) {
                 Timber.d("Inside IF");
+
                 taskViewModel.updateTask(taskDetailsEntity, taskId);
                 FancyToast.makeText(getActivity(), taskName + " " + getString(R.string.updated), FancyToast.LENGTH_SHORT, FancyToast.SUCCESS, false).show();
+                if (fromCalendar) {
+                    goToCalendarFragment();
+                } else {
+                    goToTaskFragment();
+                }
             } else {
                 Timber.d("Inside Else");
                 taskViewModel.insertTaskDetails(taskDetailsEntity);
                 FancyToast.makeText(getActivity(), taskName + " " + getString(R.string.added), FancyToast.LENGTH_SHORT, FancyToast.SUCCESS, false).show();
+                goToTaskFragment();
             }
-            goToTaskFragment();
         }
     }
 
@@ -400,6 +412,10 @@ public class Task_Add_Edit_Fragment extends Fragment {
         navController.navigate(action, navOptions);
     }
 
+    public void goToCalendarFragment() {
+        navController.navigate(R.id.action_task_Add_Edit_Fragment_to_calendarViewFragment2, null, navOptions2);
+    }
+
     @OnClick(R.id.close_Task_ImageView)
     public void closeTaskDetails() {
 
@@ -409,7 +425,11 @@ public class Task_Add_Edit_Fragment extends Fragment {
                 .setMessage(getString(R.string.dont_want_to_add_task))
                 .setCancelable(false)
                 .setPositiveButton(getString(R.string.yes), R.drawable.save_icon, (dialogInterface, which) -> {
-                    goToTaskFragment();
+                    if (fromCalendar) {
+                        goToCalendarFragment();
+                    } else {
+                        goToTaskFragment();
+                    }
 
                     FancyToast.makeText(getActivity(), getString(R.string.canceled), FancyToast.LENGTH_SHORT, FancyToast.INFO, false).show();
                     dialogInterface.dismiss();

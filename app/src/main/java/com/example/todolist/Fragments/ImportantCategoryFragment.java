@@ -9,18 +9,6 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 
-import com.example.todolist.Adapters.ImportantCategoryAdapter;
-import com.example.todolist.Dao.CategoryDao;
-import com.example.todolist.Entities.CategoryEntity;
-import com.example.todolist.R;
-import com.example.todolist.RoomDB.RoomDB;
-import com.example.todolist.ViewModel.CategoryViewModel;
-import com.shashank.sony.fancytoastlib.FancyToast;
-import com.shreyaspatil.MaterialDialog.BottomSheetMaterialDialog;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -33,6 +21,19 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.todolist.Adapters.ImportantCategoryAdapter;
+import com.example.todolist.Dao.CategoryDao;
+import com.example.todolist.Entities.CategoryEntity;
+import com.example.todolist.R;
+import com.example.todolist.RoomDB.RoomDB;
+import com.example.todolist.ViewModel.CategoryViewModel;
+import com.shashank.sony.fancytoastlib.FancyToast;
+import com.shreyaspatil.MaterialDialog.BottomSheetMaterialDialog;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator;
@@ -167,8 +168,8 @@ public class ImportantCategoryFragment extends Fragment implements ImportantCate
     }
 
     @Override
-    public void categoryFavouriteListener(View view, int position, long catId, String favourite) {
-
+    public void categoryFavouriteListener(View view, int position, long catId, String imp) {
+        categoryViewModel.updateImpCategory(catId, imp);
     }
 
     public void editDialogBox(long catId, String catName) {
@@ -194,7 +195,6 @@ public class ImportantCategoryFragment extends Fragment implements ImportantCate
 
         edit.setOnClickListener(v -> {
             categoryViewModel.editCategory(catId, input.getText().toString());
-
             FancyToast.makeText(getActivity(), getString(R.string.category_updated), FancyToast.LENGTH_SHORT, FancyToast.SUCCESS, false).show();
             dialog.dismiss();
         });

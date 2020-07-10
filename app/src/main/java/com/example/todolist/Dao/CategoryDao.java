@@ -1,9 +1,5 @@
 package com.example.todolist.Dao;
 
-import com.example.todolist.Entities.CategoryEntity;
-
-import java.util.List;
-
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
@@ -11,6 +7,10 @@ import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
+
+import com.example.todolist.Entities.CategoryEntity;
+
+import java.util.List;
 
 import static com.example.todolist.RoomDB.RoomTables.COLUMN_CATEGORIES_ID;
 import static com.example.todolist.RoomDB.RoomTables.COLUMN_CATEGORIES_IMPORTANT;
@@ -59,9 +59,9 @@ public interface CategoryDao {
     void editCategory(long catId, String catName);
 
     @Query("UPDATE " + TABLE_CATEGORIES
-            + " SET " + COLUMN_CATEGORIES_IMPORTANT + " =:favourite"
+            + " SET " + COLUMN_CATEGORIES_IMPORTANT + " =:imp"
             + " WHERE " + COLUMN_CATEGORIES_ID + " =:catId ")
-    void updateFavouriteCategory(long catId, String favourite);
+    void updateImpCategory(long catId, String imp);
 
     @Query(" SELECT COUNT ( " + COLUMN_CATEGORIES_NAME + ")"
             + " FROM " + TABLE_CATEGORIES)

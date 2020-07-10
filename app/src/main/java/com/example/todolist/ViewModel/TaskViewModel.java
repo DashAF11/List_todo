@@ -1,4 +1,4 @@
-package com.example.todolist.Fragments;
+package com.example.todolist.ViewModel;
 
 import android.app.Application;
 
@@ -56,28 +56,12 @@ public class TaskViewModel extends AndroidViewModel {
         return taskDetailsDao.getAllTasksLiveData(catId);
     }
 
-    public LiveData<List<TaskDetailsEntity>> getAllDelayTask_byCategoryLiveData(long timeStamp, long catId) {
-        return taskDetailsDao.getAllDelayTask_byCategoryLiveData(timeStamp, catId);
-    }
-
     public LiveData<List<TaskDetailsEntity>> getAllDelayedTaskLiveData(long timeStamp) {
         return taskDetailsDao.getAllDelayTaskLiveData(timeStamp);
     }
 
-    public LiveData<List<TaskDetailsEntity>> getAllDoneTask_byCategoryLiveData(String status, long catId) {
-        return taskDetailsDao.getAllDoneTask_byCategoryLiveData(status, catId);
-    }
-
-    public LiveData<List<TaskDetailsEntity>> getAllTaskAlphabetically_byCategoryLiveData(long catId) {
-        return taskDetailsDao.getAllTaskAlphabetically_byCategoryLiveData(catId);
-    }
-
-    public LiveData<List<TaskDetailsEntity>> getAllTaskTimeStampWise_byCategoryLiveData(long catId) {
-        return taskDetailsDao.getAllTaskTimeStampWise_byCategoryLiveData(catId);
-    }
-
-    public LiveData<List<TaskDetailsEntity>> getAllTaskPriorityWiseLiveData(String priority, long catId) {
-        return taskDetailsDao.getAllTaskPriorityWiseLiveData(priority, catId);
+    public LiveData<List<TaskDetailsEntity>> getEveryThing(long catId, long timestamp,String status, String priority, String priority2, String priority3) {
+        return taskDetailsDao.getEveryThing(catId,timestamp,status, priority, priority2, priority3);
     }
 
     public LiveData<List<TaskDetailsEntity>> getAllDoneTaskLiveData(String status) {

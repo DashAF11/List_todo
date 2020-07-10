@@ -5,7 +5,6 @@
     <item name="taskId" type="id" />
     <item name="taskName" type="id" />
     <item name="taskDetails" type="id" />
-    <!-- TODO: Remove or change this placeholder text -->
 
     <string name="app_name">ToDo List</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
@@ -76,6 +75,8 @@
     <string name="added">Added</string>
     <string name="created">Created</string>
     <string name="all_task">All Task</string>
+    <string name="clear">Clear All</string>
+    <string name="apply">Apply</string>
     <string name="early_Tasks">Early Tasks</string>
     <string name="alphabetically">Alphabetically</string>
     <string name="delayed">Delayed</string>
@@ -98,5 +99,9 @@
     <string name="delete">Delete</string>
     <string name="all_categories_deleted">All Categories Deleted!</string>
     <string name="all_tasks_deleted">All Tasks Deleted!</string>
+    <string name="task_not_found_filter">Tasks not found as per filter!</string>
+
+    <string name="calender_view">Calender View</string>
+    <string name="tasks_are_not_found">Tasks are not found!</string>
 
 </resources>

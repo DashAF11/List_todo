@@ -57,7 +57,7 @@ public class DelayedAdapter extends RecyclerView.Adapter<DelayedAdapter.ViewHold
         holder.delayedTaskTime_TextView.setText(entity.getTask_time());
 
         boolean today = DateUtils.isToday(taskDetailsEntity.get(position).getTimestamp());
-        Timber.d("isToday : " + today);
+      //  Timber.d("isToday : " + today);
         if (today) {
             holder.delayedTaskDate_TextView.setText("Today");
         } else {

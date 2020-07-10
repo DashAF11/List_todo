@@ -23,19 +23,6 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import com.example.todolist.Entities.CategoryEntity;
-import com.example.todolist.Entities.TaskDetailsEntity;
-import com.example.todolist.R;
-import com.example.todolist.ViewModel.CategoryViewModel;
-import com.shashank.sony.fancytoastlib.FancyToast;
-import com.shreyaspatil.MaterialDialog.BottomSheetMaterialDialog;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SwitchCompat;
@@ -45,6 +32,22 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.NavController;
 import androidx.navigation.NavOptions;
 import androidx.navigation.Navigation;
+
+import com.example.todolist.Entities.CategoryEntity;
+import com.example.todolist.Entities.TaskDetailsEntity;
+import com.example.todolist.R;
+import com.example.todolist.ViewModel.CategoryViewModel;
+import com.example.todolist.ViewModel.TaskViewModel;
+import com.shashank.sony.fancytoastlib.FancyToast;
+import com.shreyaspatil.MaterialDialog.BottomSheetMaterialDialog;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Objects;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -104,7 +107,7 @@ public class QuickTaskAddFragment extends Fragment {
     ArrayList<String> categoryList = new ArrayList<>();
     String headerText, catName, taskName, taskDate, taskTime, taskPriority = "low", taskAlarm = "false",
             mytimeHR_M, hr_forTS, minute_forTS, AM_PM, spinnerCatName;
-    boolean taskSet_DT = false;
+    boolean taskSet_DT = false, check;
     long taskTimeStamp, catId, taskId;
     int count, mYear, mMonth, mDay, mHour, mMinute, day_forTS, month_forTS, year_forTS;
 
@@ -219,7 +222,9 @@ public class QuickTaskAddFragment extends Fragment {
 
     @OnClick(R.id.date_Constraint)
     public void dateClick() {
-        hideSoftKeyboard(getActivity());
+        if (check) {
+            hideSoftKeyboard(getActivity());
+        }
         final Calendar c = Calendar.getInstance();
         mYear = c.get(Calendar.YEAR);
         mMonth = c.get(Calendar.MONTH);
@@ -253,7 +258,9 @@ public class QuickTaskAddFragment extends Fragment {
 
     @OnClick(R.id.time_Constraint)
     public void timeClick() {
-        hideSoftKeyboard(getActivity());
+        if (check) {
+            hideSoftKeyboard(getActivity());
+        }
         final Calendar c = Calendar.getInstance();
         mHour = c.get(Calendar.HOUR_OF_DAY);
         mMinute = c.get(Calendar.MINUTE);
@@ -489,6 +496,6 @@ public class QuickTaskAddFragment extends Fragment {
                 (InputMethodManager) activity.getSystemService(
                         Activity.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(
-                activity.getCurrentFocus().getWindowToken(), 0);
+                Objects.requireNonNull(activity.getCurrentFocus()).getWindowToken(), 0);
     }
 }

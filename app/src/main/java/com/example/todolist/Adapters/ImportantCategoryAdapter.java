@@ -7,15 +7,16 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.todolist.Entities.CategoryEntity;
 import com.example.todolist.R;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import timber.log.Timber;
@@ -47,16 +48,20 @@ public class ImportantCategoryAdapter extends RecyclerView.Adapter<ImportantCate
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         CategoryEntity categoryEntity = categoryEntityList.get(position);
+        long catId = categoryEntityList.get(position).getCat_id();
 
         holder.categoryID_TextView.setText("" + categoryEntity.getCat_id());
         holder.categoryName_TextView.setText(categoryEntity.getCat_name());
         holder.importantCat_TextView.setText(categoryEntity.getFavourite());
 
         holder.category_constraintClick.setOnClickListener(v -> {
-            long catId = categoryEntityList.get(position).getCat_id();
             String catName = categoryEntityList.get(position).getCat_name();
             impcategoryclickListener.singleClickListener(v, position, catId, catName);
             notifyItemChanged(position);
+        });
+
+        holder.favouriteCategory_ImageView.setOnClickListener(v -> {
+            impcategoryclickListener.categoryFavouriteListener(v, position, catId, "false");
         });
 
         //for swipe to delete/edit value been passed to fragment

@@ -57,7 +57,7 @@ public class DoneAdpater extends RecyclerView.Adapter<DoneAdpater.ViewHolder> {
         holder.doneTaskTime_TextView.setText(entity.getTask_time());
 
         boolean today = DateUtils.isToday(taskDetailsEntities.get(position).getTimestamp());
-        Timber.d("isToday : " + today);
+      //  Timber.d("isToday : " + today);
         if (today) {
             holder.doneTaskDate_TextView.setText("Today");
         } else {

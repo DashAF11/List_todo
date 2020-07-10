@@ -31,6 +31,7 @@ import com.example.todolist.Entities.CategoryEntity;
 import com.example.todolist.R;
 import com.example.todolist.RoomDB.RoomDB;
 import com.example.todolist.ViewModel.CategoryViewModel;
+import com.example.todolist.ViewModel.TaskViewModel;
 import com.shashank.sony.fancytoastlib.FancyToast;
 import com.shreyaspatil.MaterialDialog.BottomSheetMaterialDialog;
 
@@ -214,7 +215,7 @@ public class CategoryFragment extends Fragment implements CategoryAdapter.Catego
 
     @Override
     public void categoryFavouriteListener(View view, int position, long catId, String favourite) {
-        categoryViewModel.updateFavouriteCategory(catId, favourite);
+        categoryViewModel.updateImpCategory(catId, favourite);
     }
 
     @OnClick(R.id.addCategory_ImageView)
@@ -324,7 +325,7 @@ public class CategoryFragment extends Fragment implements CategoryAdapter.Catego
     @OnClick(R.id.back_ImageView)
     void backClick() {
         toggleView(searchHider_Constraint, searchCategory_TextView, deleteAllCategories_TextView);
-    //    getCategoriesLivData();
+        //    getCategoriesLivData();
     }
 
     void toggleView(ConstraintLayout constraintLayout, TextView textView1, TextView textView2) {

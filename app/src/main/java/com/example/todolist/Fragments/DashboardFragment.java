@@ -23,6 +23,7 @@ import androidx.navigation.Navigation;
 import com.example.todolist.Entities.CategoryEntity;
 import com.example.todolist.R;
 import com.example.todolist.ViewModel.CategoryViewModel;
+import com.example.todolist.ViewModel.TaskViewModel;
 import com.shashank.sony.fancytoastlib.FancyToast;
 import com.shreyaspatil.MaterialDialog.BottomSheetMaterialDialog;
 
@@ -286,5 +287,10 @@ public class DashboardFragment extends Fragment {
 
     void getTopName(String name) {
         topName_TextView.setText(name);
+    }
+
+    @OnClick(R.id.calendar_ImageView)
+    void calendarClick() {
+        navController.navigate(R.id.action_dashboardFragment_to_calendarViewFragment);
     }
 }
