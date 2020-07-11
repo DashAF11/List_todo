@@ -107,7 +107,7 @@ public class QuickTaskAddFragment extends Fragment {
     ArrayList<String> categoryList = new ArrayList<>();
     String headerText, catName, taskName, taskDate, taskTime, taskPriority = "low", taskAlarm = "false",
             mytimeHR_M, hr_forTS, minute_forTS, AM_PM, spinnerCatName;
-    boolean taskSet_DT = false, check;
+    boolean taskSet_DT = false, checkEditText_Click;
     long taskTimeStamp, catId, taskId;
     int count, mYear, mMonth, mDay, mHour, mMinute, day_forTS, month_forTS, year_forTS;
 
@@ -143,13 +143,20 @@ public class QuickTaskAddFragment extends Fragment {
 
         taskName_EditText.setImeOptions(EditorInfo.IME_ACTION_DONE);
         taskName_EditText.setSingleLine(true);
+        taskName_EditText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                checkEditText_Click = true;
+            }
+        });
+
         low_RadioButton.setChecked(true);
 
         categoryViewModel.getAllCategoriesNamesLiveData().observe(getViewLifecycleOwner(), strings -> {
             categoryList.clear();
 
             categoryList.add(0, "None");
-            categoryList.add(1, "Create new Category");
+            categoryList.add(1, "ADD NEW CATEGORY");
             categoryList.addAll(strings);
             //  Timber.d("categoryList %s", categoryList);
 
@@ -164,6 +171,7 @@ public class QuickTaskAddFragment extends Fragment {
             category_Spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
                     if (position == 1) {
                         addCategory();
                         // category_Spinner.setSelection(2);
@@ -222,7 +230,7 @@ public class QuickTaskAddFragment extends Fragment {
 
     @OnClick(R.id.date_Constraint)
     public void dateClick() {
-        if (check) {
+        if (checkEditText_Click) {
             hideSoftKeyboard(getActivity());
         }
         final Calendar c = Calendar.getInstance();
@@ -258,7 +266,7 @@ public class QuickTaskAddFragment extends Fragment {
 
     @OnClick(R.id.time_Constraint)
     public void timeClick() {
-        if (check) {
+        if (checkEditText_Click) {
             hideSoftKeyboard(getActivity());
         }
         final Calendar c = Calendar.getInstance();

@@ -79,6 +79,9 @@ public class CategoryViewModel extends AndroidViewModel {
         return categoryDao.getAllCategoriesNamesLiveData();
     }
 
+    public LiveData<List<Long>> getCategoryIDs() {
+        return categoryDao.getCategoryIDs();
+    }
 
 //    public Completable getAllCategoryNames() {
 //        return Completable.fromAction(() -> {

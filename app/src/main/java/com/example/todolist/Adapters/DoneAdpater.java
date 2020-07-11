@@ -9,18 +9,18 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.todolist.Entities.TaskDetailsEntity;
 import com.example.todolist.R;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import timber.log.Timber;
 
 import static android.graphics.Color.rgb;
 
@@ -56,15 +56,15 @@ public class DoneAdpater extends RecyclerView.Adapter<DoneAdpater.ViewHolder> {
 
         holder.doneTaskTime_TextView.setText(entity.getTask_time());
 
-        boolean today = DateUtils.isToday(taskDetailsEntities.get(position).getTimestamp());
-      //  Timber.d("isToday : " + today);
+        boolean today = DateUtils.isToday(entity.getTimestamp());
+        //  Timber.d("isToday : " + today);
         if (today) {
             holder.doneTaskDate_TextView.setText("Today");
         } else {
             holder.doneTaskDate_TextView.setText(entity.getTask_date());
         }
 
-        if (taskDetailsEntities.get(position).getTask_done_status().equals("true")) {
+        if (entity.getTask_done_status().equals("true")) {
             holder.doneTask_CheckBox.setChecked(true);
         } else {
             holder.doneTask_CheckBox.setChecked(false);
@@ -72,25 +72,32 @@ public class DoneAdpater extends RecyclerView.Adapter<DoneAdpater.ViewHolder> {
 
         holder.doneTask_CheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (!isChecked) {
-                clickListener.CheckBoxClickListener(taskDetailsEntities.get(position).getTask_id(), "false");
+                clickListener.CheckBoxClickListener(position,entity.getTask_id(), "false");
             }
         });
 
-        if (taskDetailsEntities.get(position).getTask_alarm().equals("true")) {
+        if (entity.getTask_alarm().equals("true")) {
             holder.alarm_done_ImageView.setVisibility(View.VISIBLE);
         } else {
             holder.alarm_done_ImageView.setVisibility(View.GONE);
         }
 
-        if (taskDetailsEntities.get(position).getTask_priority().equals("high")) {
-            holder.priorityColor_donTask_View.setBackgroundColor(rgb(230, 0, 0));
-        } else if (taskDetailsEntities.get(position).getTask_priority().equals("med")) {
-            holder.priorityColor_donTask_View.setBackgroundColor(rgb(255, 128, 0));
-        } else if (taskDetailsEntities.get(position).getTask_priority().equals("low")) {
-            holder.priorityColor_donTask_View.setBackgroundColor(rgb(0, 128, 0));
+        switch (entity.getTask_priority()) {
+            case "high":
+                holder.priorityColor_donTask_View.setBackgroundColor(rgb(230, 0, 0));
+                break;
+            case "med":
+                holder.priorityColor_donTask_View.setBackgroundColor(rgb(255, 128, 0));
+                break;
+            case "low":
+                holder.priorityColor_donTask_View.setBackgroundColor(rgb(0, 128, 0));
+                break;
         }
+    }
 
-
+    public void changeItem(int position, String status) {
+        taskDetailsEntities.get(position).setTask_done_status(status);
+        this.notifyItemChanged(position);
     }
 
     @Override
@@ -128,6 +135,6 @@ public class DoneAdpater extends RecyclerView.Adapter<DoneAdpater.ViewHolder> {
     }
 
     public interface RecyclerViewClickListener {
-        public void CheckBoxClickListener(long taskId, String status);
+        public void CheckBoxClickListener(int position, long taskId, String status);
     }
 }

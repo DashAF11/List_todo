@@ -23,6 +23,9 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.CompletableObserver;
+import io.reactivex.SingleObserver;
+import io.reactivex.disposables.Disposable;
 import timber.log.Timber;
 
 public class DoneTaskFragment extends Fragment implements DoneAdpater.RecyclerViewClickListener {
@@ -57,14 +60,28 @@ public class DoneTaskFragment extends Fragment implements DoneAdpater.RecyclerVi
         doneAdapter = new DoneAdpater(getActivity(), this);
         doneRecyclerView.setAdapter(doneAdapter);
 
-        getAllDoneTaskLiveData();
+        getAllDoneTaskData();
     }
 
-    private void getAllDoneTaskLiveData() {
-        taskViewModel.getAllDoneTaskLiveData("true").observe(getViewLifecycleOwner(), taskDetailsEntities -> {
-            Timber.d("Done_Entities : %s", taskDetailsEntities.toString());
-            updateUI(taskDetailsEntities);
-        });
+    private void getAllDoneTaskData() {
+        taskViewModel.getAllDoneTaskeData("true")
+                .subscribe(new SingleObserver<List<TaskDetailsEntity>>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onSuccess(List<TaskDetailsEntity> taskDetailsEntities) {
+                        Timber.d("Done_Entities : %s", taskDetailsEntities.toString());
+                        updateUI(taskDetailsEntities);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+                });
     }
 
     public void updateUI(List<TaskDetailsEntity> taskDetailsEntity) {
@@ -79,8 +96,26 @@ public class DoneTaskFragment extends Fragment implements DoneAdpater.RecyclerVi
     }
 
     @Override
-    public void CheckBoxClickListener(long taskId, String status) {
+    public void CheckBoxClickListener(int position, long taskId, String status) {
         Timber.d("CheckBoxClickListener \n taskId : %d,  Status : %s", taskId, status);
-        taskViewModel.updateTaskDoneStatus(taskId, status);
+        taskViewModel.updateTaskStatus(taskId, status)
+                .subscribe(new CompletableObserver() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        doneAdapter.changeItem(position, status);
+                        getAllDoneTaskData();
+                        Timber.d("updateTaskDoneStatus_onComplete");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Timber.e(e);
+                    }
+                });
     }
 }

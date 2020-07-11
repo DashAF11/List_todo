@@ -45,6 +45,11 @@ public class CalendarViewAdapter extends RecyclerView.Adapter<CalendarViewAdapte
         this.notifyDataSetChanged();
     }
 
+    public void changeItem(int position, String status) {
+        taskDetailsEntities.get(position).setTask_done_status(status);
+        this.notifyItemChanged(position);
+    }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
@@ -62,11 +67,12 @@ public class CalendarViewAdapter extends RecyclerView.Adapter<CalendarViewAdapte
         holder.calendar_taskID_TextView.setText("" + taskDetailsEntity.getTask_id());
         holder.calendar_taskDate_TextView.setText(taskDetailsEntity.getTask_date());
         holder.calendar_taskTime_TextView.setText(taskDetailsEntity.getTask_time());
-        if (taskDetailsEntities.get(position).getTask_date().equals("false")) {
+
+        if (taskDetailsEntity.getTask_date().equals("false")) {
             holder.calendar_taskDate_TextView.setVisibility(View.GONE);
             holder.calendar_taskTime_TextView.setVisibility(View.GONE);
         } else {
-            boolean today = DateUtils.isToday(taskDetailsEntities.get(position).getTimestamp());
+            boolean today = DateUtils.isToday(taskDetailsEntity.getTimestamp());
             //Timber.d("isToday : " + today);
             if (today) {
                 holder.calendar_taskDate_TextView.setText("Today");
@@ -75,42 +81,43 @@ public class CalendarViewAdapter extends RecyclerView.Adapter<CalendarViewAdapte
             }
         }
 
-
-        if (taskDetailsEntities.get(position).getTask_alarm().equals("true")) {
+        if (taskDetailsEntity.getTask_alarm().equals("true")) {
             holder.calendar_alarmTask_ImageView.setVisibility(View.VISIBLE);
         } else {
             holder.calendar_alarmTask_ImageView.setVisibility(View.GONE);
         }
 
-        if (taskDetailsEntities.get(position).getTimestamp() <= calendar.getTimeInMillis()) {
+        if (taskDetailsEntity.getTimestamp() <= calendar.getTimeInMillis()) {
             holder.calendar_delayTask_ImageView.setVisibility(View.VISIBLE);
         } else {
             holder.calendar_delayTask_ImageView.setVisibility(View.GONE);
         }
 
-        if (taskDetailsEntities.get(position).getTask_priority().equals("high")) {
-            holder.calendar_priority_color_View.setBackgroundColor(rgb(230, 0, 0));
-        } else if (taskDetailsEntities.get(position).getTask_priority().equals("med")) {
-            holder.calendar_priority_color_View.setBackgroundColor(rgb(255, 128, 0));
-        } else if (taskDetailsEntities.get(position).getTask_priority().equals("low")) {
-            holder.calendar_priority_color_View.setBackgroundColor(rgb(0, 128, 0));
+        switch (taskDetailsEntity.getTask_priority()) {
+            case "high":
+                holder.calendar_priority_color_View.setBackgroundColor(rgb(230, 0, 0));
+                break;
+            case "med":
+                holder.calendar_priority_color_View.setBackgroundColor(rgb(255, 128, 0));
+                break;
+            case "low":
+                holder.calendar_priority_color_View.setBackgroundColor(rgb(0, 128, 0));
+                break;
         }
 
-        if (taskDetailsEntities.get(position).getTask_done_status().equals("true")) {
+        if (taskDetailsEntity.getTask_done_status().equals("true")) {
             holder.calendar_task_CheckBox.setChecked(true);
             holder.calendar_taskName_TextView.setPaintFlags(holder.calendar_taskName_TextView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
         } else {
             holder.calendar_task_CheckBox.setChecked(false);
+            holder.calendar_taskName_TextView.setPaintFlags(holder.calendar_taskName_TextView.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
         }
 
         holder.calendar_task_CheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
-
             if (isChecked) {
-                holder.calendar_taskName_TextView.setPaintFlags(holder.calendar_taskName_TextView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-                taskClickListener.checkBoxClickListener(taskDetailsEntities.get(position).getTask_id(), "true");
+                taskClickListener.checkBoxClickListener(position, taskDetailsEntity.getTask_id(), "true");
             } else {
-                holder.calendar_taskName_TextView.setPaintFlags(holder.calendar_taskName_TextView.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
-                taskClickListener.checkBoxClickListener(taskDetailsEntities.get(position).getTask_id(), "false");
+                taskClickListener.checkBoxClickListener(position, taskDetailsEntity.getTask_id(), "false");
             }
         });
 
@@ -159,6 +166,6 @@ public class CalendarViewAdapter extends RecyclerView.Adapter<CalendarViewAdapte
     }
 
     public interface TaskClickListener {
-        public void checkBoxClickListener(long taskId, String status);
+        public void checkBoxClickListener(int position, long taskId, String status);
     }
 }

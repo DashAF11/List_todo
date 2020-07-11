@@ -82,7 +82,7 @@ public class Task_Add_Edit_Fragment extends Fragment {
             taskAlarm = "false", mytimeHR_M, hr_forTS, minute_forTS, AM_PM;
     long taskTimeStamp, catId, taskId;
     int mYear, mMonth, mDay, mHour, mMinute, day_forTS, month_forTS, year_forTS;
-    boolean editTextClick = false, check, fromCalendar;
+    boolean editTextClick = false, checkEditText_Click, fromCalendar;
     TaskViewModel taskViewModel;
     NavController navController;
     NavOptions navOptions, navOptions2;
@@ -180,6 +180,13 @@ public class Task_Add_Edit_Fragment extends Fragment {
         taskName_EditText.setImeOptions(EditorInfo.IME_ACTION_DONE);
         taskName_EditText.setSingleLine(true);
 
+        taskName_EditText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                checkEditText_Click = true;
+            }
+        });
+
         radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
             if (checkedId == R.id.high_RadioButton) {
                 taskPriority = "high";
@@ -219,7 +226,7 @@ public class Task_Add_Edit_Fragment extends Fragment {
 
     @OnClick(R.id.date_Constraint)
     public void dateClick() {
-        if (check) {
+        if (checkEditText_Click) {
             hideSoftKeyboard(getActivity());
         }
         final Calendar c = Calendar.getInstance();
@@ -255,7 +262,7 @@ public class Task_Add_Edit_Fragment extends Fragment {
 
     @OnClick(R.id.time_Constraint)
     public void timeClick() {
-        if (check) {
+        if (checkEditText_Click) {
             hideSoftKeyboard(getActivity());
         }
 

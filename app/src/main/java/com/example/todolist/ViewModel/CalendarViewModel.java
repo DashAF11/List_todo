@@ -6,7 +6,6 @@ import android.util.SparseIntArray;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.AndroidViewModel;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.todolist.Dao.TaskDetailsDao;
@@ -22,6 +21,7 @@ import java.util.List;
 
 import io.reactivex.Completable;
 import io.reactivex.CompletableObserver;
+import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
@@ -55,22 +55,20 @@ public class CalendarViewModel extends AndroidViewModel {
         return taskDetails;
     }
 
-    public LiveData<List<TaskDetailsEntity>> calendarTaskDetails(Date date) {
-
+    public Single<List<TaskDetailsEntity>> calendarTaskDetails(Date date) {
         Calendar c = Calendar.getInstance();
         c.setTimeInMillis(date.getTime());
         c.set(Calendar.HOUR_OF_DAY, 0);
         c.set(Calendar.MINUTE, 0);
         c.set(Calendar.SECOND, 0);
         long startTimeMillis = c.getTimeInMillis();
-
         c.add(Calendar.HOUR, 24);
         long endTimeMillis = c.getTimeInMillis();
-        LiveData<List<TaskDetailsEntity>> detailsEntities = taskDetailsDao.getTaskBetweenLiveData(startTimeMillis, endTimeMillis);
+        Single<List<TaskDetailsEntity>> detailsEntities = taskDetailsDao.getTaskBetweenData(startTimeMillis, endTimeMillis)
+                .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
 
         return detailsEntities;
     }
-
 
     public void setCalendarEvents(List<CalendarEvent> events) {
         calendarEvent.postValue(events);
@@ -79,9 +77,7 @@ public class CalendarViewModel extends AndroidViewModel {
     public void getAllTask() {
         Completable.fromAction(() -> {
             List<CalendarEvent> allCalendarEvents = new ArrayList<>();
-
             List<TaskDetailsEntity> taskDetailsEntities = taskDetailsDao.getAllTasks();
-
             Timber.d("taskDetailsEntities : %s", taskDetailsEntities.toString());
 
             for (TaskDetailsEntity entity : taskDetailsEntities) {
@@ -111,43 +107,6 @@ public class CalendarViewModel extends AndroidViewModel {
                     @Override
                     public void onComplete() {
                         Timber.d("getAllTask_onComplete");
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Timber.e(e);
-                    }
-                });
-    }
-
-    public void getAllTaskDateWise(Date date) {
-        Completable.fromAction(() -> {
-
-            Calendar c = Calendar.getInstance();
-            c.setTimeInMillis(date.getTime());
-            c.set(Calendar.HOUR_OF_DAY, 0);
-            c.set(Calendar.MINUTE, 0);
-            c.set(Calendar.SECOND, 0);
-            long startTimeMillis = c.getTimeInMillis();
-
-            c.add(Calendar.HOUR, 24);
-            long endTimeMillis = c.getTimeInMillis();
-            List<TaskDetailsEntity> detailsEntities = taskDetailsDao.getTaskBetween(startTimeMillis, endTimeMillis);
-
-
-            taskDetails.postValue(detailsEntities);
-        })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new CompletableObserver() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-
-                    }
-
-                    @Override
-                    public void onComplete() {
-
                     }
 
                     @Override

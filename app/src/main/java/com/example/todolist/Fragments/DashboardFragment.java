@@ -168,7 +168,7 @@ public class DashboardFragment extends Fragment {
     }
 
     public void groupClick() {
-        getTopName("Category");
+        getTopName("Categories");
         replaceFragment(R.id.dashBoard_container_frameLayout, CategoryFragment.newInstance(), CategoryFragment.class.getSimpleName(), null);
     }
 
@@ -183,7 +183,7 @@ public class DashboardFragment extends Fragment {
     }
 
     public void favClick() {
-        getTopName("Important Category");
+        getTopName("Important Categories");
         replaceFragment(R.id.dashBoard_container_frameLayout, ImportantCategoryFragment.newInstance(), ImportantCategoryFragment.class.getSimpleName(), null);
     }
 

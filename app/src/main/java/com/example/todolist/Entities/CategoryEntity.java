@@ -28,6 +28,36 @@ public class CategoryEntity {
     @ColumnInfo(name = COLUMN_CATEGORIES_IMPORTANT)
     private String favourite;
 
+    private long pendingTask;
+    private long totalTask;
+
+    @Override
+    public String toString() {
+        return "CategoryEntity{" +
+                "cat_id=" + cat_id +
+                ", cat_name='" + cat_name + '\'' +
+                ", timestamp=" + timestamp +
+                ", favourite='" + favourite + '\'' +
+                ", pendingTask=" + pendingTask +
+                ", totalTask=" + totalTask +
+                '}';
+    }
+
+    public long getPendingTask() {
+        return pendingTask;
+    }
+
+    public void setPendingTask(long pendingTask) {
+        this.pendingTask = pendingTask;
+    }
+
+    public long getTotalTask() {
+        return totalTask;
+    }
+
+    public void setTotalTask(long totalTask) {
+        this.totalTask = totalTask;
+    }
 
     public long getCat_id() {
         return cat_id;
@@ -51,16 +81,6 @@ public class CategoryEntity {
 
     public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
-    }
-
-    @Override
-    public String toString() {
-        return "CategoryEntity{" +
-                "cat_id=" + cat_id +
-                ", cat_name='" + cat_name + '\'' +
-                ", timestamp=" + timestamp +
-                ", favourite='" + favourite + '\'' +
-                '}';
     }
 
     public String getFavourite() {

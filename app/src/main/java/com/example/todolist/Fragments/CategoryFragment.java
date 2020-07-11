@@ -27,6 +27,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.todolist.Adapters.CategoryAdapter;
 import com.example.todolist.Dao.CategoryDao;
+import com.example.todolist.Dao.TaskDetailsDao;
 import com.example.todolist.Entities.CategoryEntity;
 import com.example.todolist.R;
 import com.example.todolist.RoomDB.RoomDB;
@@ -35,7 +36,9 @@ import com.example.todolist.ViewModel.TaskViewModel;
 import com.shashank.sony.fancytoastlib.FancyToast;
 import com.shreyaspatil.MaterialDialog.BottomSheetMaterialDialog;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -68,11 +71,16 @@ public class CategoryFragment extends Fragment implements CategoryAdapter.Catego
     NavController navController;
     CategoryAdapter categoryAdapter;
     CategoryDao categoryDao;
+    TaskDetailsDao taskDetailsDao;
     CategoryEntity categoryEntity;
     private CategoryViewModel categoryViewModel;
     TaskViewModel taskViewModel;
     Calendar calendar;
     long timeStamp;
+    List<CategoryEntity> detailedCategory = new ArrayList<>();
+    List<Long> catIDs = new ArrayList<>();
+    List<Long> pendingTaskList = new ArrayList<>();
+    List<Long> totalTaskList = new ArrayList<>();
 
     public static CategoryFragment newInstance() {
         return new CategoryFragment();
@@ -92,6 +100,7 @@ public class CategoryFragment extends Fragment implements CategoryAdapter.Catego
 
         navController = Navigation.findNavController(view);
         categoryDao = RoomDB.getRoomDB(getActivity()).categoryDao();
+        taskDetailsDao = RoomDB.getRoomDB(getActivity()).taskDetailsDao();
         calendar = Calendar.getInstance();
         categoryViewModel = ViewModelProviders.of(this).get(CategoryViewModel.class);
         taskViewModel = ViewModelProviders.of(this).get(TaskViewModel.class);
@@ -127,7 +136,9 @@ public class CategoryFragment extends Fragment implements CategoryAdapter.Catego
 
         categoryViewModel.getLiveCategoriesData().observe(getViewLifecycleOwner(), categoryEntities -> {
 
-            Timber.d("getAllCategoriesLiveData : %s", categoryEntities.toString());
+            detailedCategory.addAll(categoryEntities);
+            Timber.d("getAllCategoriesLiveData : %s", detailedCategory.toString());
+
             if (categoryEntities.size() == 0) {
                 nothingTODO_Constraint.setVisibility(View.VISIBLE);
                 categoryRecyclerView.setVisibility(View.GONE);
@@ -139,6 +150,39 @@ public class CategoryFragment extends Fragment implements CategoryAdapter.Catego
                 topCategory_constraint.setVisibility(View.VISIBLE);
             }
         });
+
+//        categoryViewModel.getCategoryIDs().observe(getViewLifecycleOwner(), longs -> {
+//            if (longs.size() != 0) {
+//                catIDs.addAll(longs);
+//                Timber.d("AllCatIDs : %s", catIDs.toString());
+//
+//                for (int i = 0; i < catIDs.size(); i++) {
+//
+//                    taskViewModel.totalTasks(catIDs.get(i)).observe(getViewLifecycleOwner(), aLong -> {
+//                        if (aLong != null) {
+//                            totalTaskList.add(aLong);
+//                        }
+//                    });
+//
+//                    taskViewModel.pendingTasks(catIDs.get(i), "false").observe(getViewLifecycleOwner(), aLong -> {
+//                        if (aLong != null) {
+//                            pendingTaskList.add(aLong);
+//                        }
+//                    });
+//                }
+//                Timber.d("totalTasks : %s", totalTaskList.toString());
+//                Timber.d("pendingTasks : %s", pendingTaskList.toString());
+//            }
+//        });
+//
+//        CategoryEntity categoryEntity = new CategoryEntity();
+//        for (int i = 0; i < totalTaskList.size(); i++) {
+//
+//            categoryEntity.setTotalTask(totalTaskList.get(i));
+//            categoryEntity.setPendingTask(totalTaskList.get(i));
+//        }
+////        Timber.d("detailedCategory : %s", detailedCategory.toString());
+
     }
 
     //swipe Left to delete_Cat recyclerView
@@ -256,7 +300,7 @@ public class CategoryFragment extends Fragment implements CategoryAdapter.Catego
         BottomSheetMaterialDialog mBottomSheetDialog = new BottomSheetMaterialDialog.Builder(getActivity())
 
                 .setTitle(title)
-                .setMessage("All the task will be deleted too!")
+                .setMessage(getString(R.string.all_tasks_will))
                 .setCancelable(false)
                 .setPositiveButton(getString(R.string.delete), R.drawable.delete_white_icon, (dialogInterface, which) -> {
 

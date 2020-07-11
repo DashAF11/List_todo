@@ -71,4 +71,7 @@ public interface CategoryDao {
             + " FROM " + TABLE_CATEGORIES
             + " WHERE " + COLUMN_CATEGORIES_IMPORTANT + " =:important ")
     LiveData<Integer> totalImpCategoryCount(String important);
+
+    @Query(" SELECT " + COLUMN_CATEGORIES_ID + " FROM " + TABLE_CATEGORIES)
+    LiveData<List<Long>> getCategoryIDs();
 }

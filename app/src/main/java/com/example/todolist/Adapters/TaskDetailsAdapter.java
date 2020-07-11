@@ -65,11 +65,12 @@ public class TaskDetailsAdapter extends RecyclerView.Adapter<TaskDetailsAdapter.
         holder.taskID_TextView.setText("" + taskDetailsEntity.getTask_id());
         holder.taskDate_TextView.setText(taskDetailsEntity.getTask_date());
         holder.taskTime_TextView.setText(taskDetailsEntity.getTask_time());
-        if (detailsEntities.get(position).getTask_date().equals("false")) {
+
+        if (taskDetailsEntity.getTask_date().equals("false")) {
             holder.taskDate_TextView.setVisibility(View.GONE);
             holder.taskTime_TextView.setVisibility(View.GONE);
         } else {
-            boolean today = DateUtils.isToday(detailsEntities.get(position).getTimestamp());
+            boolean today = DateUtils.isToday(taskDetailsEntity.getTimestamp());
             //Timber.d("isToday : " + today);
             if (today) {
                 holder.taskDate_TextView.setText("Today");
@@ -78,42 +79,44 @@ public class TaskDetailsAdapter extends RecyclerView.Adapter<TaskDetailsAdapter.
             }
         }
 
-
-        if (detailsEntities.get(position).getTask_alarm().equals("true")) {
+        if (taskDetailsEntity.getTask_alarm().equals("true")) {
             holder.alarmTask_ImageView.setVisibility(View.VISIBLE);
         } else {
             holder.alarmTask_ImageView.setVisibility(View.GONE);
         }
 
-        if (detailsEntities.get(position).getTimestamp() <= calendar.getTimeInMillis()) {
+        if (taskDetailsEntity.getTimestamp() <= calendar.getTimeInMillis()) {
             holder.delayTask_ImageView.setVisibility(View.VISIBLE);
         } else {
             holder.delayTask_ImageView.setVisibility(View.GONE);
         }
 
-        if (detailsEntities.get(position).getTask_priority().equals("high")) {
-            holder.priority_color_View.setBackgroundColor(rgb(230, 0, 0));
-        } else if (detailsEntities.get(position).getTask_priority().equals("med")) {
-            holder.priority_color_View.setBackgroundColor(rgb(255, 128, 0));
-        } else if (detailsEntities.get(position).getTask_priority().equals("low")) {
-            holder.priority_color_View.setBackgroundColor(rgb(0, 128, 0));
+        switch (taskDetailsEntity.getTask_priority()) {
+            case "high":
+                holder.priority_color_View.setBackgroundColor(rgb(230, 0, 0));
+                break;
+            case "med":
+                holder.priority_color_View.setBackgroundColor(rgb(255, 128, 0));
+                break;
+            case "low":
+                holder.priority_color_View.setBackgroundColor(rgb(0, 128, 0));
+                break;
         }
 
-        if (detailsEntities.get(position).getTask_done_status().equals("true")) {
+        if (taskDetailsEntity.getTask_done_status().equals("true")) {
             holder.task_CheckBox.setChecked(true);
             holder.taskName_TextView.setPaintFlags(holder.taskName_TextView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
         } else {
             holder.task_CheckBox.setChecked(false);
+            holder.taskName_TextView.setPaintFlags(holder.taskName_TextView.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
         }
 
         holder.task_CheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
-
+          //  Timber.d("%s, %s => %s",isChecked, position, taskDetailsEntity.toString());
             if (isChecked) {
-                holder.taskName_TextView.setPaintFlags(holder.taskName_TextView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-                clickListener.checkBoxClickListener(detailsEntities.get(position).getTask_id(), "true");
+                clickListener.checkBoxClickListener(position, detailsEntities.get(position).getTask_id(), "true");
             } else {
-                holder.taskName_TextView.setPaintFlags(holder.taskName_TextView.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
-                clickListener.checkBoxClickListener(detailsEntities.get(position).getTask_id(), "false");
+                clickListener.checkBoxClickListener(position, detailsEntities.get(position).getTask_id(), "false");
             }
         });
 
@@ -163,6 +166,11 @@ public class TaskDetailsAdapter extends RecyclerView.Adapter<TaskDetailsAdapter.
         }
     };
 
+    public void changeItem(int position, String status) {
+        detailsEntities.get(position).setTask_done_status(status);
+        this.notifyItemChanged(position);
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.taskID_TextView)
@@ -195,6 +203,6 @@ public class TaskDetailsAdapter extends RecyclerView.Adapter<TaskDetailsAdapter.
     }
 
     public interface RecyclerClickListener {
-        public void checkBoxClickListener(long taskId, String status);
+        public void checkBoxClickListener(int position, long taskId, String status);
     }
 }

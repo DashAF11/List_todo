@@ -12,6 +12,8 @@ import com.example.todolist.Entities.TaskDetailsEntity;
 
 import java.util.List;
 
+import io.reactivex.Single;
+
 import static com.example.todolist.RoomDB.RoomTables.COLUMN_TASK_ALARM;
 import static com.example.todolist.RoomDB.RoomTables.COLUMN_TASK_CATID;
 import static com.example.todolist.RoomDB.RoomTables.COLUMN_TASK_DATE;
@@ -75,7 +77,7 @@ public interface TaskDetailsDao {
 
     @Query("SELECT * FROM " + TABLE_TASK
             + " WHERE " + COLUMN_TASK_DONE_STATUS + "=:doneStatus")
-    LiveData<List<TaskDetailsEntity>> getAllDoneTaskLiveData(String doneStatus);
+    Single<List<TaskDetailsEntity>> getAllDoneTaskData(String doneStatus);
 
     @Query(" DELETE FROM " + TABLE_TASK
             + " WHERE " + COLUMN_TASK_DONE_STATUS + "=:status"
@@ -105,10 +107,14 @@ public interface TaskDetailsDao {
     LiveData<Integer> totalDelayTaskCount(long currentTimeStamp);
 
     @Query("SELECT * FROM " + TABLE_TASK
+            + " WHERE " + COLUMN_TASK_CATID + "=:catId")
+    Single<List<TaskDetailsEntity>> getAllTasksData(long catId);
+
+    @Query("SELECT * FROM " + TABLE_TASK
             + " WHERE " + COLUMN_TASK_TIMESTAMP + " BETWEEN :startTimeMillis AND :endTimeMillis "
             + " ORDER BY " + COLUMN_TASK_TIMESTAMP
             + " DESC ")
-    List<TaskDetailsEntity> getTaskBetween(long startTimeMillis, long endTimeMillis);
+    Single<List<TaskDetailsEntity>> getTaskBetweenData(long startTimeMillis, long endTimeMillis);
 
     @Query("SELECT * FROM " + TABLE_TASK
             + " WHERE " + COLUMN_TASK_TIMESTAMP + " BETWEEN :startTimeMillis AND :endTimeMillis "
@@ -119,4 +125,15 @@ public interface TaskDetailsDao {
     @Query("SELECT * FROM " + TABLE_TASK
             + " ORDER BY " + COLUMN_TASK_TIMESTAMP + " DESC ")
     List<TaskDetailsEntity> getAllTasks();
+
+    @Query(" SELECT COUNT ( " + COLUMN_TASK_NAME + ")"
+            + " FROM " + TABLE_TASK
+            + " WHERE " + COLUMN_TASK_CATID + "=:catId"
+            + " AND " + COLUMN_TASK_DONE_STATUS + "=:status")
+    LiveData<Long> pendingTasks(long catId, String status);
+
+    @Query(" SELECT COUNT ( " + COLUMN_TASK_NAME + ")"
+            + " FROM " + TABLE_TASK
+            + " WHERE " + COLUMN_TASK_CATID + "=:catId")
+    LiveData<Long> totalTasks(long catId);
 }

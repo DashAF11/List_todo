@@ -8,10 +8,10 @@
 
     <string name="app_name">ToDo List</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="group_task">Category</string>
-    <string name="Important">Important</string>
-    <string name="done_task">Done Task</string>
-    <string name="delayed_task">Delayed Task</string>
+    <string name="group_task">Categories</string>
+    <string name="Important">Important Categories</string>
+    <string name="done_task">Done Tasks</string>
+    <string name="delayed_task">Delayed Tasks</string>
     <string name="searchicon">searchICON</string>
     <string name="to_do">To-Do</string>
     <string name="addgroupicon">addGroupICON</string>
@@ -101,7 +101,9 @@
     <string name="all_tasks_deleted">All Tasks Deleted!</string>
     <string name="task_not_found_filter">Tasks not found as per filter!</string>
 
-    <string name="calender_view">Calender View</string>
-    <string name="tasks_are_not_found">Tasks are not found!</string>
+    <string name="calendar_view">Calendar View</string>
+    <string name="tasks_are_not_found">Tasks were not found!</string>
+    <string name="all_tasks_will">All the tasks will be deleted too!</string>
+    <string name="today">Today</string>
 
 </resources>

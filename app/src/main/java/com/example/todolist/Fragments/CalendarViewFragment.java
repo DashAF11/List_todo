@@ -41,6 +41,9 @@ import java.util.Locale;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.reactivex.CompletableObserver;
+import io.reactivex.SingleObserver;
+import io.reactivex.disposables.Disposable;
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator;
 import timber.log.Timber;
 
@@ -59,13 +62,66 @@ public class CalendarViewFragment extends Fragment implements CalendarViewAdapte
     ConstraintLayout empty_calendarConstraint;
 
     CalendarViewAdapter calendarViewAdapter;
-    private CalendarViewModel calendarViewModel;
-    private TaskViewModel taskViewModel;
     SimpleDateFormat monthDateFormat = new SimpleDateFormat("MMM-yyyy", Locale.getDefault());
     NavController navController;
     NavOptions navOptions;
-    Date todaysDate;
+    Date todaysDate, clickedDate;
+    //swipe Left to delete_Task recyclerView
+    ItemTouchHelper.SimpleCallback swipeEditTask = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
+        @Override
+        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder viewHolder1) {
+            return false;
+        }
 
+        @Override
+        public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+            new RecyclerViewSwipeDecorator.Builder(getActivity(), c, recyclerView, viewHolder, dX / 4, dY, actionState, isCurrentlyActive)
+                    .addBackgroundColor(ContextCompat.getColor(getActivity(), R.color.dark_purple_background))
+                    .addActionIcon(R.drawable.edit_white_icon)
+                    .create()
+                    .decorate();
+            super.onChildDraw(c, recyclerView, viewHolder, dX / 4, dY, actionState, isCurrentlyActive);
+        }
+
+        @Override
+        public void onSwiped(@NonNull final RecyclerView.ViewHolder viewHolder, int i) {
+
+            TaskDetailsEntity detailsEntity = (TaskDetailsEntity) viewHolder.itemView.getTag(R.id.taskDetails);
+            // Timber.d("detailsEntity : %s", detailsEntity.toString());
+
+            editDialogBox(detailsEntity);
+        }
+    };
+    private CalendarViewModel calendarViewModel;
+    private TaskViewModel taskViewModel;
+    //swipe Left to delete_Task recyclerView
+    ItemTouchHelper.SimpleCallback swipeDeleteTask = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+        @Override
+        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder viewHolder1) {
+            return false;
+        }
+
+        @Override
+        public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+            new RecyclerViewSwipeDecorator.Builder(getActivity(), c, recyclerView, viewHolder, dX / 4, dY, actionState, isCurrentlyActive)
+                    .addBackgroundColor(ContextCompat.getColor(getActivity(), R.color.dark_purple_background))
+                    .addActionIcon(R.drawable.delete_white_icon)
+                    .create()
+                    .decorate();
+            super.onChildDraw(c, recyclerView, viewHolder, dX / 4, dY, actionState, isCurrentlyActive);
+        }
+
+        @Override
+        public void onSwiped(@NonNull final RecyclerView.ViewHolder viewHolder, int i) {
+
+            long catId = (long) viewHolder.itemView.getTag(R.id.catId),
+                    taskId = (long) viewHolder.itemView.getTag(R.id.taskId);
+            String taskName = String.valueOf(viewHolder.itemView.getTag(R.id.taskName));
+            //  Timber.d("taskName : %s", taskName);
+
+            deleteDialogBox(catId, taskId, taskName, "Delete " + taskName + "?", "Are you sure want to delete this task?", false);
+        }
+    };
 
     public static CalendarViewFragment newInstance() {
         return new CalendarViewFragment();
@@ -101,13 +157,16 @@ public class CalendarViewFragment extends Fragment implements CalendarViewAdapte
         calendarViewAdapter = new CalendarViewAdapter(getActivity(), this);
         calendarRecyclerView.setAdapter(calendarViewAdapter);
 
+
+        getEvents();
         getTodaysTasks(todaysDate);
 
         calendarView.setListener(new CompactCalendarView.CompactCalendarViewListener() {
 
             @Override
             public void onDayClick(Date date) {
-                // calendarViewModel.getAllTaskDateWise(date);
+                clickedDate = date;
+                Timber.d("ClickedDate : " + clickedDate);
                 getTodaysTasks(date);
             }
 
@@ -117,6 +176,10 @@ public class CalendarViewFragment extends Fragment implements CalendarViewAdapte
                 monthName_TextView.setText(monthDateFormat.format(firstDayOfNewMonth));
             }
         });
+    }
+
+    void getEvents() {
+        calendarViewModel.getAllTask();
 
         calendarViewModel.getCalendarEvents().observe(getViewLifecycleOwner(), (List<CalendarEvent> calenderEvents) -> {
             Timber.d("calenderEvents : %s", calenderEvents.toString());
@@ -127,91 +190,35 @@ public class CalendarViewFragment extends Fragment implements CalendarViewAdapte
                 calendarView.addEvent(event);
             }
         });
-
-        calendarViewModel.getAllTask();
-
-//        calendarViewModel.getTaskDetailsList().observe(getViewLifecycleOwner(), (List<TaskDetailsEntity> detailsEntities) -> {
-//            if (detailsEntities.size() == 0) {
-//                empty_calendarConstraint.setVisibility(View.VISIBLE);
-//                calendarRecyclerView.setVisibility(View.GONE);
-//            } else {
-//                empty_calendarConstraint.setVisibility(View.GONE);
-//                calendarRecyclerView.setVisibility(View.VISIBLE);
-//                calendarViewAdapter.setCalendarTaskList(detailsEntities);
-//            }
-//        });
     }
 
     private void getTodaysTasks(Date todaysDate) {
-        calendarViewModel.calendarTaskDetails(todaysDate).observe(getViewLifecycleOwner(), taskDetailsEntities -> {
-            Timber.d("calendarTaskDetails_todays : %s", taskDetailsEntities.toString());
+        calendarViewModel.calendarTaskDetails(todaysDate).subscribe(new SingleObserver<List<TaskDetailsEntity>>() {
+            @Override
+            public void onSubscribe(Disposable d) {
 
-            if (taskDetailsEntities.size() == 0) {
-                empty_calendarConstraint.setVisibility(View.VISIBLE);
-                calendarRecyclerView.setVisibility(View.GONE);
-            } else {
-                empty_calendarConstraint.setVisibility(View.GONE);
-                calendarRecyclerView.setVisibility(View.VISIBLE);
-                calendarViewAdapter.setCalendarTaskList(taskDetailsEntities);
             }
-            //updateUI(taskDetailsEntities);
+
+            @Override
+            public void onSuccess(List<TaskDetailsEntity> taskDetailsEntities) {
+                Timber.d("calendarTaskDetails_todays : %s", taskDetailsEntities.toString());
+
+                if (taskDetailsEntities.size() == 0) {
+                    empty_calendarConstraint.setVisibility(View.VISIBLE);
+                    calendarRecyclerView.setVisibility(View.GONE);
+                } else {
+                    empty_calendarConstraint.setVisibility(View.GONE);
+                    calendarRecyclerView.setVisibility(View.VISIBLE);
+                    calendarViewAdapter.setCalendarTaskList(taskDetailsEntities);
+                }
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
         });
     }
-
-    //swipe Left to delete_Task recyclerView
-    ItemTouchHelper.SimpleCallback swipeEditTask = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
-        @Override
-        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder viewHolder1) {
-            return false;
-        }
-
-        @Override
-        public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
-            new RecyclerViewSwipeDecorator.Builder(getActivity(), c, recyclerView, viewHolder, dX / 4, dY, actionState, isCurrentlyActive)
-                    .addBackgroundColor(ContextCompat.getColor(getActivity(), R.color.dark_purple_background))
-                    .addActionIcon(R.drawable.edit_white_icon)
-                    .create()
-                    .decorate();
-            super.onChildDraw(c, recyclerView, viewHolder, dX / 4, dY, actionState, isCurrentlyActive);
-        }
-
-        @Override
-        public void onSwiped(@NonNull final RecyclerView.ViewHolder viewHolder, int i) {
-
-            TaskDetailsEntity detailsEntity = (TaskDetailsEntity) viewHolder.itemView.getTag(R.id.taskDetails);
-            // Timber.d("detailsEntity : %s", detailsEntity.toString());
-
-            editDialogBox(detailsEntity);
-        }
-    };
-    //swipe Left to delete_Task recyclerView
-    ItemTouchHelper.SimpleCallback swipeDeleteTask = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
-        @Override
-        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder viewHolder1) {
-            return false;
-        }
-
-        @Override
-        public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
-            new RecyclerViewSwipeDecorator.Builder(getActivity(), c, recyclerView, viewHolder, dX / 4, dY, actionState, isCurrentlyActive)
-                    .addBackgroundColor(ContextCompat.getColor(getActivity(), R.color.dark_purple_background))
-                    .addActionIcon(R.drawable.delete_white_icon)
-                    .create()
-                    .decorate();
-            super.onChildDraw(c, recyclerView, viewHolder, dX / 4, dY, actionState, isCurrentlyActive);
-        }
-
-        @Override
-        public void onSwiped(@NonNull final RecyclerView.ViewHolder viewHolder, int i) {
-
-            long catId = (long) viewHolder.itemView.getTag(R.id.catId),
-                    taskId = (long) viewHolder.itemView.getTag(R.id.taskId);
-            String taskName = String.valueOf(viewHolder.itemView.getTag(R.id.taskName));
-            //  Timber.d("taskName : %s", taskName);
-
-            deleteDialogBox(catId, taskId, taskName, "Delete " + taskName + "?", "Are you sure want to delete this task?", false);
-        }
-    };
 
     public void deleteDialogBox(long catId, long taskId, String taskName, String Title, String
             message, boolean allTask) {
@@ -223,6 +230,7 @@ public class CalendarViewFragment extends Fragment implements CalendarViewAdapte
                 .setCancelable(false)
                 .setPositiveButton(getString(R.string.delete), R.drawable.delete_white_icon, (dialogInterface, which) -> {
 
+
                     if (allTask) {
                         taskViewModel.deleteAllTasks();
                         FancyToast.makeText(getActivity(), getString(R.string.all_tasks_deleted), FancyToast.LENGTH_SHORT, FancyToast.SUCCESS, false).show();
@@ -230,11 +238,12 @@ public class CalendarViewFragment extends Fragment implements CalendarViewAdapte
                         taskViewModel.deleteSingleTask(catId, taskId);
                         FancyToast.makeText(getActivity(), taskName + " " + getString(R.string.deleted), FancyToast.LENGTH_SHORT, FancyToast.DEFAULT, false).show();
                     }
+                    getTodaysTasks(clickedDate);
                     dialogInterface.dismiss();
                 })
                 .setNegativeButton(getString(R.string.cancel), R.drawable.close_darkpurple_icon, (dialogInterface, which) -> {
                     FancyToast.makeText(getActivity(), getString(R.string.canceled), FancyToast.LENGTH_SHORT, FancyToast.DEFAULT, false).show();
-                    // getAllTaskLiveData();
+                    getTodaysTasks(clickedDate);
                     dialogInterface.dismiss();
                 })
                 .build();
@@ -257,8 +266,25 @@ public class CalendarViewFragment extends Fragment implements CalendarViewAdapte
     }
 
     @Override
-    public void checkBoxClickListener(long taskId, String status) {
+    public void checkBoxClickListener(int position, long taskId, String status) {
         taskViewModel.updateTaskDoneStatus(taskId, status);
+        taskViewModel.updateTaskStatus(taskId, status).subscribe(new CompletableObserver() {
+            @Override
+            public void onSubscribe(Disposable d) {
+
+            }
+
+            @Override
+            public void onComplete() {
+                Timber.d("updateTaskDoneStatus_onComplete");
+                calendarViewAdapter.changeItem(position, status);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+        });
     }
 
     @OnClick(R.id.backCalender_ImageView)

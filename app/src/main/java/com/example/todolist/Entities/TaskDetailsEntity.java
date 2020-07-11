@@ -138,6 +138,7 @@ public class TaskDetailsEntity implements Parcelable {
         this.task_catName = task_catName;
     }
 
+
     @Override
     public String toString() {
         return "TaskDetailsEntity{" +

@@ -41,6 +41,9 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.reactivex.CompletableObserver;
+import io.reactivex.SingleObserver;
+import io.reactivex.disposables.Disposable;
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator;
 import timber.log.Timber;
 
@@ -177,16 +180,28 @@ public class TaskFragment extends Fragment implements TaskDetailsAdapter.Recycle
     }
 
     public void getAllTaskLiveData() {
-        taskViewModel.getAllTaskLiveData(catId).observe(getViewLifecycleOwner(), taskDetailsEntities -> {
-            // Timber.d("taskDetailsEntities : %s", taskDetailsEntities.toString());
-            if (taskDetailsEntities.size() == 0) {
-                filter_ImageView.setVisibility(View.GONE);
-                topTask_constraint.setVisibility(View.GONE);
-            } else {
-                filter_ImageView.setVisibility(View.VISIBLE);
-                topTask_constraint.setVisibility(View.VISIBLE);
+        taskViewModel.getAllTaskLiveData(catId).subscribe(new SingleObserver<List<TaskDetailsEntity>>() {
+            @Override
+            public void onSubscribe(Disposable d) {
+
             }
-            updateUI(taskDetailsEntities, "Add Task", false);
+
+            @Override
+            public void onSuccess(List<TaskDetailsEntity> taskDetailsEntities) {
+                if (taskDetailsEntities.size() == 0) {
+                    filter_ImageView.setVisibility(View.GONE);
+                    topTask_constraint.setVisibility(View.GONE);
+                } else {
+                    filter_ImageView.setVisibility(View.VISIBLE);
+                    topTask_constraint.setVisibility(View.VISIBLE);
+                }
+                updateUI(taskDetailsEntities, "Add Task", false);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Timber.e(e);
+            }
         });
     }
 
@@ -228,7 +243,8 @@ public class TaskFragment extends Fragment implements TaskDetailsAdapter.Recycle
         if (selectionList.size() != 0) {
             Timber.d("SelectionList  : %s", selectionList.toString());
             taskViewModel.getEveryThing(catId, Long.parseLong(selectionList.get(0)), selectionList.get(1), selectionList.get(2),
-                    selectionList.get(3), String.valueOf(selectionList.get(4))).observe(getViewLifecycleOwner(), taskDetailsEntities -> {
+                    selectionList.get(3), String.valueOf(selectionList.get(4)))
+                    .observe(getViewLifecycleOwner(), taskDetailsEntities -> {
                 Timber.d("getEveryThing : Size : %d \nList : %s", taskDetailsEntities.size(), taskDetailsEntities.toString());
                 updateUI(taskDetailsEntities, getString(R.string.task_not_found_filter), true);
             });
@@ -347,9 +363,26 @@ public class TaskFragment extends Fragment implements TaskDetailsAdapter.Recycle
     }
 
     @Override
-    public void checkBoxClickListener(long taskId, String status) {
-        //  Timber.d("checkBoxClickListener : %d  %s", taskId, status);
-        taskViewModel.updateTaskDoneStatus(taskId, status);
+    public void checkBoxClickListener(int position, long taskId, String status) {
+        Timber.d("checkBoxClickListener : %d  %s", taskId, status);
+        taskViewModel.updateTaskStatus(taskId, status)
+                .subscribe(new CompletableObserver() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        Timber.d("updateTaskDoneStatus_onComplete");
+                        taskDetailsAdapter.changeItem(position, status);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Timber.e(e);
+                    }
+                });
     }
 
     public void editDialogBox(TaskDetailsEntity taskDetailsEntity) {

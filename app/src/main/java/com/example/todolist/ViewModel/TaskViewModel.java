@@ -14,6 +14,7 @@ import java.util.List;
 
 import io.reactivex.Completable;
 import io.reactivex.CompletableObserver;
+import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
@@ -52,20 +53,20 @@ public class TaskViewModel extends AndroidViewModel {
                 });
     }
 
-    public LiveData<List<TaskDetailsEntity>> getAllTaskLiveData(long catId) {
-        return taskDetailsDao.getAllTasksLiveData(catId);
+    public Single<List<TaskDetailsEntity>> getAllTaskLiveData(long catId) {
+        return taskDetailsDao.getAllTasksData(catId).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }
 
     public LiveData<List<TaskDetailsEntity>> getAllDelayedTaskLiveData(long timeStamp) {
         return taskDetailsDao.getAllDelayTaskLiveData(timeStamp);
     }
 
-    public LiveData<List<TaskDetailsEntity>> getEveryThing(long catId, long timestamp,String status, String priority, String priority2, String priority3) {
-        return taskDetailsDao.getEveryThing(catId,timestamp,status, priority, priority2, priority3);
+    public LiveData<List<TaskDetailsEntity>> getEveryThing(long catId, long timestamp, String status, String priority, String priority2, String priority3) {
+        return taskDetailsDao.getEveryThing(catId, timestamp, status, priority, priority2, priority3);
     }
 
-    public LiveData<List<TaskDetailsEntity>> getAllDoneTaskLiveData(String status) {
-        return taskDetailsDao.getAllDoneTaskLiveData(status);
+    public Single<List<TaskDetailsEntity>> getAllDoneTaskeData(String status) {
+        return taskDetailsDao.getAllDoneTaskData(status).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }
 
     public LiveData<Integer> totalDoneTaskCount() {
@@ -74,6 +75,14 @@ public class TaskViewModel extends AndroidViewModel {
 
     public LiveData<Integer> totalDelayTaskCount(long timeStamp) {
         return taskDetailsDao.totalDelayTaskCount(timeStamp);
+    }
+
+    public LiveData<Long> pendingTasks(long catId, String status) {
+        return taskDetailsDao.pendingTasks(catId, status);
+    }
+
+    public LiveData<Long> totalTasks(long catId) {
+        return taskDetailsDao.totalTasks(catId);
     }
 
     public void updateTaskDoneStatus(long taskId, String status) {
@@ -98,6 +107,13 @@ public class TaskViewModel extends AndroidViewModel {
                         Timber.e(e);
                     }
                 });
+    }
+
+    public Completable updateTaskStatus(long taskId, String status) {
+        return Completable.fromAction(() -> {
+            taskDetailsDao.updateTaskDoneStatus(taskId, status);
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 
     public void deleteSingleTask(long catId, long taskId) {
