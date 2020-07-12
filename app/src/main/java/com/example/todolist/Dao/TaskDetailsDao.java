@@ -52,11 +52,12 @@ public interface TaskDetailsDao {
             " OR (( :priority3 IS NULL ) OR (task_priority =:priority3) ) )" +
 
             " ORDER BY task_timestamp DESC")
-    LiveData<List<TaskDetailsEntity>> getEveryThing(long catID, long timestamp, String status, String priority, String priority2, String priority3);
+    LiveData<List<TaskDetailsEntity>> sortedData(long catID, long timestamp, String status, String priority, String priority2, String priority3);
 
     @Query("SELECT * FROM " + TABLE_TASK
-            + " WHERE " + COLUMN_TASK_TIMESTAMP + "<:currentTimeStamp")
-    LiveData<List<TaskDetailsEntity>> getAllDelayTaskLiveData(long currentTimeStamp);
+            + " WHERE " + COLUMN_TASK_TIMESTAMP + "<:currentTimeStamp"
+    + " AND " +COLUMN_TASK_DONE_STATUS + "=:status")
+    LiveData<List<TaskDetailsEntity>> getAllDelayTaskLiveData(long currentTimeStamp,String status);
 
     @Query(" UPDATE " + TABLE_TASK
             + " SET " + COLUMN_TASK_DONE_STATUS + "=:status"
@@ -126,14 +127,18 @@ public interface TaskDetailsDao {
             + " ORDER BY " + COLUMN_TASK_TIMESTAMP + " DESC ")
     List<TaskDetailsEntity> getAllTasks();
 
+    @Query("SELECT * FROM " + TABLE_TASK
+            + " ORDER BY " + COLUMN_TASK_TIMESTAMP + " DESC ")
+    LiveData<List<TaskDetailsEntity>> getAllTasksLiveData();
+
     @Query(" SELECT COUNT ( " + COLUMN_TASK_NAME + ")"
             + " FROM " + TABLE_TASK
             + " WHERE " + COLUMN_TASK_CATID + "=:catId"
             + " AND " + COLUMN_TASK_DONE_STATUS + "=:status")
-    LiveData<Long> pendingTasks(long catId, String status);
+    Long pendingTasks(long catId, String status);
 
     @Query(" SELECT COUNT ( " + COLUMN_TASK_NAME + ")"
             + " FROM " + TABLE_TASK
             + " WHERE " + COLUMN_TASK_CATID + "=:catId")
-    LiveData<Long> totalTasks(long catId);
+    Long totalTasks(long catId);
 }

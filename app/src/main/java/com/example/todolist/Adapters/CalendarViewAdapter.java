@@ -50,6 +50,10 @@ public class CalendarViewAdapter extends RecyclerView.Adapter<CalendarViewAdapte
         this.notifyItemChanged(position);
     }
 
+    public void changeDeleteItem(int position) {
+        this.notifyItemChanged(position);
+    }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {

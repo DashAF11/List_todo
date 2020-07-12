@@ -33,7 +33,6 @@
         <TextView
             android:id="@+id/totalTask_TextView"
             style="@style/recyclerView_layout_SubTextView"
-            android:text="-- Tasks, "
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/categoryName_TextView" />
 
@@ -41,14 +40,13 @@
             android:id="@+id/pendingTask_TextView"
             style="@style/recyclerView_layout_SubTextView"
             android:layout_marginStart="2dp"
-            android:text="-- Pending Task"
             app:layout_constraintStart_toEndOf="@+id/totalTask_TextView"
             app:layout_constraintTop_toBottomOf="@+id/categoryName_TextView" />
 
         <TextView
             android:id="@+id/categoryName_TextView"
             style="@style/recyclerView_layout_HeaderTextView"
-            android:text="Groceries"
+            android:text="@string/categoryname"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 

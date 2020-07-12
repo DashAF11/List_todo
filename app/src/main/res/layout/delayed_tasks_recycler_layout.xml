@@ -17,15 +17,6 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
-            android:id="@+id/delayed_done_ImageView"
-            style="@style/task_RecyclerView_ImageView"
-            android:src="@drawable/done_icon"
-            app:layout_constraintBottom_toTopOf="@+id/alarm_delayed_ImageView"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/delayed_divider_View"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <ImageView
             android:id="@+id/alarm_delayed_ImageView"
             style="@style/task_RecyclerView_ImageView"
             android:src="@drawable/alarm_icon"
@@ -33,7 +24,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/delayed_divider_View"
-            app:layout_constraintTop_toBottomOf="@+id/delayed_done_ImageView" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/delayedTaskCategory_TextView"

@@ -145,7 +145,7 @@ public class TaskFragment extends Fragment implements TaskDetailsAdapter.Recycle
             taskDetailsAdapter = new TaskDetailsAdapter(getActivity(), this);
             taskRecyclerView.setAdapter(taskDetailsAdapter);
 
-            getAllTaskLiveData();
+            getAllTasksData();
         }
 
         task_SearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -179,11 +179,10 @@ public class TaskFragment extends Fragment implements TaskDetailsAdapter.Recycle
         priorityLow_CheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> lowTask = isChecked);
     }
 
-    public void getAllTaskLiveData() {
-        taskViewModel.getAllTaskLiveData(catId).subscribe(new SingleObserver<List<TaskDetailsEntity>>() {
+    public void getAllTasksData() {
+        taskViewModel.getAllTasksData(catId).subscribe(new SingleObserver<List<TaskDetailsEntity>>() {
             @Override
             public void onSubscribe(Disposable d) {
-
             }
 
             @Override
@@ -207,10 +206,7 @@ public class TaskFragment extends Fragment implements TaskDetailsAdapter.Recycle
 
     @OnClick(R.id.applyFilter_TextView)
     void sortedTaskLiveData() {
-        getEveryThing();
-    }
-
-    public void getEveryThing() {
+        toggleView(filter_Hider_Constraint);
 
         selectionList = new ArrayList<>();
 
@@ -240,16 +236,16 @@ public class TaskFragment extends Fragment implements TaskDetailsAdapter.Recycle
             selectionList.add(null);
         }
 
-        if (selectionList.size() != 0) {
-            Timber.d("SelectionList  : %s", selectionList.toString());
-            taskViewModel.getEveryThing(catId, Long.parseLong(selectionList.get(0)), selectionList.get(1), selectionList.get(2),
-                    selectionList.get(3), String.valueOf(selectionList.get(4)))
-                    .observe(getViewLifecycleOwner(), taskDetailsEntities -> {
-                Timber.d("getEveryThing : Size : %d \nList : %s", taskDetailsEntities.size(), taskDetailsEntities.toString());
-                updateUI(taskDetailsEntities, getString(R.string.task_not_found_filter), true);
-            });
-        }
-        toggleView(filter_Hider_Constraint);
+
+        if (!delayedTask && !doneTask && !highTask && !medTask && !lowTask) return;
+
+        Timber.d("SelectionList  : %s", selectionList.toString());
+        taskViewModel.sortedData(catId, Long.parseLong(selectionList.get(0)), selectionList.get(1), selectionList.get(2),
+                selectionList.get(3), String.valueOf(selectionList.get(4)))
+                .observe(getViewLifecycleOwner(), taskDetailsEntities -> {
+                    Timber.d("getEveryThing : Size : %d \nList : %s", taskDetailsEntities.size(), taskDetailsEntities.toString());
+                    updateUI(taskDetailsEntities, getString(R.string.task_not_found_filter), true);
+                });
     }
 
     public void updateUI(List<TaskDetailsEntity> taskDetailsEntity, String message, boolean click) {
@@ -321,7 +317,7 @@ public class TaskFragment extends Fragment implements TaskDetailsAdapter.Recycle
             String taskName = String.valueOf(viewHolder.itemView.getTag(R.id.taskName));
             //  Timber.d("taskName : %s", taskName);
 
-            deleteDialogBox(catId, taskId, taskName, "Delete " + taskName + "?", "Are you sure want to delete this task?", false);
+            deleteDialogBox(viewHolder.getAdapterPosition(), catId, taskId, taskName, "Delete " + taskName + "?", "Are you sure want to delete this task?", false);
         }
     };
 
@@ -389,16 +385,13 @@ public class TaskFragment extends Fragment implements TaskDetailsAdapter.Recycle
         addTask("Edit Task", taskDetailsEntity);
     }
 
-    public void deleteDialogBox(long catId, long taskId, String taskName, String Title, String
-            message, boolean allTask) {
+    public void deleteDialogBox(int position, long catId, long taskId, String taskName, String Title, String message, boolean allTask) {
 
         BottomSheetMaterialDialog mBottomSheetDialog = new BottomSheetMaterialDialog.Builder(getActivity())
-
                 .setTitle(Title)
                 .setMessage(message)
                 .setCancelable(false)
                 .setPositiveButton(getString(R.string.delete), R.drawable.delete_white_icon, (dialogInterface, which) -> {
-
                     if (allTask) {
                         taskViewModel.deleteAllTasks();
                         FancyToast.makeText(getActivity(), getString(R.string.all_tasks_deleted), FancyToast.LENGTH_SHORT, FancyToast.SUCCESS, false).show();
@@ -406,11 +399,14 @@ public class TaskFragment extends Fragment implements TaskDetailsAdapter.Recycle
                         taskViewModel.deleteSingleTask(catId, taskId);
                         FancyToast.makeText(getActivity(), taskName + " " + getString(R.string.deleted), FancyToast.LENGTH_SHORT, FancyToast.DEFAULT, false).show();
                     }
+                    taskDetailsAdapter.notifyItemRemoved(position);
+                    getAllTasksData();
                     dialogInterface.dismiss();
                 })
                 .setNegativeButton(getString(R.string.cancel), R.drawable.close_darkpurple_icon, (dialogInterface, which) -> {
                     FancyToast.makeText(getActivity(), getString(R.string.canceled), FancyToast.LENGTH_SHORT, FancyToast.DEFAULT, false).show();
-                    getAllTaskLiveData();
+                    taskDetailsAdapter.notifyItemRemoved(position + 1);    //notifies the RecyclerView Adapter that data in adapter has been removed at a particular position.
+                    taskDetailsAdapter.notifyItemRangeChanged(position, taskDetailsAdapter.getItemCount());   //notifies the RecyclerView Adapter that positions of element in adapter has been changed from position(removed element index to end of list), please update it.
                     dialogInterface.dismiss();
                 })
                 .build();
@@ -424,14 +420,14 @@ public class TaskFragment extends Fragment implements TaskDetailsAdapter.Recycle
     }
 
     @OnClick(R.id.deleteAllTask_TextView)
-    void deleteAllCategories() {
-        deleteDialogBox(0, 0, null, "Delete All Tasks?", "Are you sure want to delete all tasks?", true);
+    void deleteAllTasks() {
+        deleteDialogBox(0, 0, 0, null, "Delete All Tasks?", "Are you sure want to delete all tasks?", true);
     }
 
     @OnClick(R.id.backTask_ImageView)
     void backClick() {
         toggleView(searchTaskHider_Constraint, searchTask_TextView, deleteAllTask_TextView);
-        // getAllTaskLiveData();
+         getAllTasksData();
     }
 
     void toggleView(ConstraintLayout constraintLayout, TextView textView1, TextView textView2) {
@@ -454,7 +450,7 @@ public class TaskFragment extends Fragment implements TaskDetailsAdapter.Recycle
 
     @OnClick(R.id.clearFilter_TextView)
     void clearSort() {
-        getAllTaskLiveData();
+        getAllTasksData();
         delayedTask_CheckBox.setChecked(false);
         doneTask_CheckBox.setChecked(false);
         priorityHigh_CheckBox.setChecked(false);

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -46,7 +47,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -107,9 +107,9 @@ public class QuickTaskAddFragment extends Fragment {
     ArrayList<String> categoryList = new ArrayList<>();
     String headerText, catName, taskName, taskDate, taskTime, taskPriority = "low", taskAlarm = "false",
             mytimeHR_M, hr_forTS, minute_forTS, AM_PM, spinnerCatName;
-    boolean taskSet_DT = false, checkEditText_Click;
+    boolean taskSet_DT = false;
     long taskTimeStamp, catId, taskId;
-    int count, mYear, mMonth, mDay, mHour, mMinute, day_forTS, month_forTS, year_forTS;
+    int mYear, mMonth, mDay, mHour, mMinute, day_forTS, month_forTS, year_forTS;
 
 
     @Override
@@ -143,12 +143,6 @@ public class QuickTaskAddFragment extends Fragment {
 
         taskName_EditText.setImeOptions(EditorInfo.IME_ACTION_DONE);
         taskName_EditText.setSingleLine(true);
-        taskName_EditText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                checkEditText_Click = true;
-            }
-        });
 
         low_RadioButton.setChecked(true);
 
@@ -160,21 +154,20 @@ public class QuickTaskAddFragment extends Fragment {
             categoryList.addAll(strings);
             //  Timber.d("categoryList %s", categoryList);
 
-            count = categoryList.size();
-
             ArrayAdapter<String> catname_Adapter = new ArrayAdapter<String>(getContext(),
                     android.R.layout.simple_spinner_item, categoryList);
 
             catname_Adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             category_Spinner.setAdapter(catname_Adapter);
             category_Spinner.setSelection(0);
+
             category_Spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    hideKeyboard(requireActivity());
 
                     if (position == 1) {
                         addCategory();
-                        // category_Spinner.setSelection(2);
                     } else {
                         catName = parent.getItemAtPosition(position).toString();
                         //    Timber.d("catName : %s", catName);
@@ -230,9 +223,7 @@ public class QuickTaskAddFragment extends Fragment {
 
     @OnClick(R.id.date_Constraint)
     public void dateClick() {
-        if (checkEditText_Click) {
-            hideSoftKeyboard(getActivity());
-        }
+
         final Calendar c = Calendar.getInstance();
         mYear = c.get(Calendar.YEAR);
         mMonth = c.get(Calendar.MONTH);
@@ -266,9 +257,7 @@ public class QuickTaskAddFragment extends Fragment {
 
     @OnClick(R.id.time_Constraint)
     public void timeClick() {
-        if (checkEditText_Click) {
-            hideSoftKeyboard(getActivity());
-        }
+
         final Calendar c = Calendar.getInstance();
         mHour = c.get(Calendar.HOUR_OF_DAY);
         mMinute = c.get(Calendar.MINUTE);
@@ -453,6 +442,7 @@ public class QuickTaskAddFragment extends Fragment {
         input.setSingleLine(true);
 
         cancle.setOnClickListener(view1 -> {
+            category_Spinner.setSelection(0);
             FancyToast.makeText(getActivity(), getString(R.string.canceled), FancyToast.LENGTH_SHORT, FancyToast.DEFAULT, false).show();
             dialog.dismiss();
         });
@@ -468,6 +458,7 @@ public class QuickTaskAddFragment extends Fragment {
             categoryEntity.setFavourite("false");
 
             categoryViewModel.addCategory(categoryEntity);
+            category_Spinner.setSelection(3);
             FancyToast.makeText(getActivity(), input.getText().toString() + " Created!", FancyToast.LENGTH_SHORT, FancyToast.SUCCESS, false).show();
             dialog.dismiss();
 
@@ -499,11 +490,13 @@ public class QuickTaskAddFragment extends Fragment {
                 });
     }
 
-    public static void hideSoftKeyboard(Activity activity) {
-        InputMethodManager inputMethodManager =
-                (InputMethodManager) activity.getSystemService(
-                        Activity.INPUT_METHOD_SERVICE);
-        inputMethodManager.hideSoftInputFromWindow(
-                Objects.requireNonNull(activity.getCurrentFocus()).getWindowToken(), 0);
+    private void hideKeyboard(Activity activity) {
+        if (activity != null && activity.getWindow() != null) {
+            activity.getWindow().getDecorView();
+            InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+            if (imm != null) {
+                imm.hideSoftInputFromWindow(activity.getWindow().getDecorView().getWindowToken(), 0);
+            }
+        }
     }
 }

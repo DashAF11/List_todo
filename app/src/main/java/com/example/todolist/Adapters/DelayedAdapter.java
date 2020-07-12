@@ -8,15 +8,16 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.todolist.Entities.TaskDetailsEntity;
 import com.example.todolist.R;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import timber.log.Timber;
@@ -57,17 +58,11 @@ public class DelayedAdapter extends RecyclerView.Adapter<DelayedAdapter.ViewHold
         holder.delayedTaskTime_TextView.setText(entity.getTask_time());
 
         boolean today = DateUtils.isToday(taskDetailsEntity.get(position).getTimestamp());
-      //  Timber.d("isToday : " + today);
+        //  Timber.d("isToday : " + today);
         if (today) {
             holder.delayedTaskDate_TextView.setText("Today");
         } else {
             holder.delayedTaskDate_TextView.setText(entity.getTask_date());
-        }
-
-        if (taskDetailsEntity.get(position).getTask_done_status().equals("true")) {
-            holder.delayed_done_ImageView.setVisibility(View.VISIBLE);
-        } else {
-            holder.delayed_done_ImageView.setVisibility(View.GONE);
         }
 
         if (taskDetailsEntity.get(position).getTask_alarm().equals("true")) {
@@ -76,14 +71,17 @@ public class DelayedAdapter extends RecyclerView.Adapter<DelayedAdapter.ViewHold
             holder.alarm_delayed_ImageView.setVisibility(View.GONE);
         }
 
-        if (taskDetailsEntity.get(position).getTask_priority().equals("high")) {
-            holder.priorityColor_donTask_View.setBackgroundColor(rgb(230, 0, 0));
-        } else if (taskDetailsEntity.get(position).getTask_priority().equals("med")) {
-            holder.priorityColor_donTask_View.setBackgroundColor(rgb(255, 128, 0));
-        } else if (taskDetailsEntity.get(position).getTask_priority().equals("low")) {
-            holder.priorityColor_donTask_View.setBackgroundColor(rgb(0, 128, 0));
+        switch (taskDetailsEntity.get(position).getTask_priority()) {
+            case "high":
+                holder.priorityColor_donTask_View.setBackgroundColor(rgb(230, 0, 0));
+                break;
+            case "med":
+                holder.priorityColor_donTask_View.setBackgroundColor(rgb(255, 128, 0));
+                break;
+            case "low":
+                holder.priorityColor_donTask_View.setBackgroundColor(rgb(0, 128, 0));
+                break;
         }
-
     }
 
     @Override
@@ -105,8 +103,6 @@ public class DelayedAdapter extends RecyclerView.Adapter<DelayedAdapter.ViewHold
         @BindView(R.id.priorityColor_donTask_View)
         ConstraintLayout priorityColor_donTask_View;
 
-        @BindView(R.id.delayed_done_ImageView)
-        ImageView delayed_done_ImageView;
         @BindView(R.id.alarm_delayed_ImageView)
         ImageView alarm_delayed_ImageView;
 

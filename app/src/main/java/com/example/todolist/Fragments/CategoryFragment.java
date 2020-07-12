@@ -43,6 +43,11 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.reactivex.Completable;
+import io.reactivex.CompletableObserver;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator;
 import timber.log.Timber;
 
@@ -114,7 +119,7 @@ public class CategoryFragment extends Fragment implements CategoryAdapter.Catego
         categoryAdapter = new CategoryAdapter(getActivity(), this);
         categoryRecyclerView.setAdapter(categoryAdapter);
 
-        getCategoriesLivData();
+        getCategoriesData();
 
         catgory_SearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -132,57 +137,94 @@ public class CategoryFragment extends Fragment implements CategoryAdapter.Catego
         });
     }
 
-    public void getCategoriesLivData() {
-
+    public void getCategoriesData() {
         categoryViewModel.getLiveCategoriesData().observe(getViewLifecycleOwner(), categoryEntities -> {
-
+            detailedCategory.clear();
+            Timber.d("getCategoryMutableLiveData : %s", categoryEntities.toString());
             detailedCategory.addAll(categoryEntities);
-            Timber.d("getAllCategoriesLiveData : %s", detailedCategory.toString());
 
             if (categoryEntities.size() == 0) {
                 nothingTODO_Constraint.setVisibility(View.VISIBLE);
                 categoryRecyclerView.setVisibility(View.GONE);
                 topCategory_constraint.setVisibility(View.GONE);
             } else {
-                categoryAdapter.setCategoryList(categoryEntities);
+                getTotalPendingDetails();
                 nothingTODO_Constraint.setVisibility(View.GONE);
                 categoryRecyclerView.setVisibility(View.VISIBLE);
                 topCategory_constraint.setVisibility(View.VISIBLE);
             }
         });
 
-//        categoryViewModel.getCategoryIDs().observe(getViewLifecycleOwner(), longs -> {
-//            if (longs.size() != 0) {
-//                catIDs.addAll(longs);
-//                Timber.d("AllCatIDs : %s", catIDs.toString());
+        //mutableLiveData
+//        categoryViewModel.getAllCategory();
+//        categoryViewModel.getCategoryMutableLiveData().observe(getViewLifecycleOwner(), categoryEntities -> {
+//        });
+
+        //singleData
+//        categoryViewModel.getCategoriesData().subscribe(new SingleObserver<List<CategoryEntity>>() {
+//            @Override
+//            public void onSubscribe(Disposable d) {
+//            }
 //
-//                for (int i = 0; i < catIDs.size(); i++) {
+//            @Override
+//            public void onSuccess(List<CategoryEntity> categoryEntities) {
+//                detailedCategory.addAll(categoryEntities);
 //
-//                    taskViewModel.totalTasks(catIDs.get(i)).observe(getViewLifecycleOwner(), aLong -> {
-//                        if (aLong != null) {
-//                            totalTaskList.add(aLong);
-//                        }
-//                    });
-//
-//                    taskViewModel.pendingTasks(catIDs.get(i), "false").observe(getViewLifecycleOwner(), aLong -> {
-//                        if (aLong != null) {
-//                            pendingTaskList.add(aLong);
-//                        }
-//                    });
+//                if (detailedCategory.size() == 0) {
+//                    nothingTODO_Constraint.setVisibility(View.VISIBLE);
+//                    categoryRecyclerView.setVisibility(View.GONE);
+//                    topCategory_constraint.setVisibility(View.GONE);
+//                } else {
+//                    getTotalPendingDetails();
+//                    nothingTODO_Constraint.setVisibility(View.GONE);
+//                    categoryRecyclerView.setVisibility(View.VISIBLE);
+//                    topCategory_constraint.setVisibility(View.VISIBLE);
 //                }
-//                Timber.d("totalTasks : %s", totalTaskList.toString());
-//                Timber.d("pendingTasks : %s", pendingTaskList.toString());
+//            }
+//
+//            @Override
+//            public void onError(Throwable e) {
+//                Timber.e(e);
 //            }
 //        });
-//
-//        CategoryEntity categoryEntity = new CategoryEntity();
-//        for (int i = 0; i < totalTaskList.size(); i++) {
-//
-//            categoryEntity.setTotalTask(totalTaskList.get(i));
-//            categoryEntity.setPendingTask(totalTaskList.get(i));
-//        }
-////        Timber.d("detailedCategory : %s", detailedCategory.toString());
+    }
 
+    void getTotalPendingDetails() {
+        catIDs.clear();
+        totalTaskList.clear();
+        pendingTaskList.clear();
+        Completable.fromAction(() ->
+        {
+            catIDs = categoryViewModel.getCategoryIds();
+            if (catIDs.size() != 0) {
+                for (int i = 0; i < catIDs.size(); i++) {
+                    totalTaskList.add(taskViewModel.totalTasks(catIDs.get(i)));
+                    pendingTaskList.add(taskViewModel.pendingTasks(catIDs.get(i), "false"));
+                }
+                for (int i = 0; i < detailedCategory.size(); i++) {
+                    detailedCategory.get(i).setTotalTask(totalTaskList.get(i));
+                    detailedCategory.get(i).setPendingTask(pendingTaskList.get(i));
+                }
+            }
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new CompletableObserver() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        categoryAdapter.setCategoryList(detailedCategory);
+                        //   Timber.d("Total_PendingTask_onComplete");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Timber.e(e);
+                    }
+                });
     }
 
     //swipe Left to delete_Cat recyclerView
@@ -204,11 +246,9 @@ public class CategoryFragment extends Fragment implements CategoryAdapter.Catego
 
         @Override
         public void onSwiped(@NonNull final RecyclerView.ViewHolder viewHolder, int i) {
-
             long catId = (long) viewHolder.itemView.getTag(R.id.catId);
             String catName = (String) viewHolder.itemView.getTag(R.id.catName);
-
-            editDialogBox(catId, catName);
+            editDialogBox(viewHolder.getAdapterPosition(), catId, catName);
         }
     };
 
@@ -231,11 +271,9 @@ public class CategoryFragment extends Fragment implements CategoryAdapter.Catego
 
         @Override
         public void onSwiped(@NonNull final RecyclerView.ViewHolder viewHolder, int i) {
-
             long catId = (long) viewHolder.itemView.getTag(R.id.catId);
             String catName = (String) viewHolder.itemView.getTag(R.id.catName);
-
-            deleteDialogBox(catId, catName, "Delete Category", false);
+            deleteDialogBox(viewHolder.getAdapterPosition(), catId, catName, "Delete Category", false);
         }
     };
 
@@ -288,15 +326,13 @@ public class CategoryFragment extends Fragment implements CategoryAdapter.Catego
             categoryEntity.setFavourite("false");
 
             categoryViewModel.addCategory(categoryEntity);
-
             FancyToast.makeText(getActivity(), input.getText().toString() + " Added!", FancyToast.LENGTH_SHORT, FancyToast.SUCCESS, false).show();
-
             dialog.dismiss();
         });
         dialog.show();
     }
 
-    public void deleteDialogBox(long catId, String catName, String title, boolean allCategory) {
+    public void deleteDialogBox(int position, long catId, String catName, String title, boolean allCategory) {
         BottomSheetMaterialDialog mBottomSheetDialog = new BottomSheetMaterialDialog.Builder(getActivity())
 
                 .setTitle(title)
@@ -313,12 +349,13 @@ public class CategoryFragment extends Fragment implements CategoryAdapter.Catego
                         categoryViewModel.deleteCategory(catId);
                         taskViewModel.deleteAllTask_byCatID(catId);
                     }
-
+                    categoryAdapter.notifyItemRemoved(position);
                     dialogInterface.dismiss();
                 })
                 .setNegativeButton(getString(R.string.cancel), R.drawable.close_darkpurple_icon, (dialogInterface, which) -> {
                     FancyToast.makeText(getActivity(), getString(R.string.canceled), FancyToast.LENGTH_SHORT, FancyToast.DEFAULT, false).show();
-                    getCategoriesLivData();
+                    categoryAdapter.notifyItemRemoved(position + 1);    //notifies the RecyclerView Adapter that data in adapter has been removed at a particular position.
+                    categoryAdapter.notifyItemRangeChanged(position, categoryAdapter.getItemCount());   //notifies the RecyclerView Adapter that positions of element in adapter has been changed from position(removed element index to end of list), please update it.
                     dialogInterface.dismiss();
                 })
                 .build();
@@ -326,7 +363,7 @@ public class CategoryFragment extends Fragment implements CategoryAdapter.Catego
         mBottomSheetDialog.show();
     }
 
-    public void editDialogBox(long catId, String catName) {
+    public void editDialogBox(int position, long catId, String catName) {
         final Dialog dialog = new Dialog(getActivity(),
                 R.style.dialogBoxTheme);
 
@@ -342,14 +379,14 @@ public class CategoryFragment extends Fragment implements CategoryAdapter.Catego
         input.setText(catName);
 
         cancle.setOnClickListener(view1 -> {
-            getCategoriesLivData();
+            categoryAdapter.notifyItemRemoved(position + 1);    //notifies the RecyclerView Adapter that data in adapter has been removed at a particular position.
+            categoryAdapter.notifyItemRangeChanged(position, categoryAdapter.getItemCount());   //notifies the RecyclerView Adapter that positions of element in adapter has been changed from position(removed element index to end of list), please update it.
             FancyToast.makeText(getActivity(), getString(R.string.canceled), FancyToast.LENGTH_SHORT, FancyToast.DEFAULT, false).show();
             dialog.dismiss();
         });
 
         edit.setOnClickListener(v -> {
             categoryViewModel.editCategory(catId, input.getText().toString());
-
             FancyToast.makeText(getActivity(), getString(R.string.category_updated), FancyToast.LENGTH_SHORT, FancyToast.SUCCESS, false).show();
             dialog.dismiss();
         });
@@ -363,13 +400,12 @@ public class CategoryFragment extends Fragment implements CategoryAdapter.Catego
 
     @OnClick(R.id.deleteAllCategories_TextView)
     void deleteAllCategories() {
-        deleteDialogBox(0, null, "Delete All Categories?", true);
+        deleteDialogBox(0, 0, null, "Delete All Categories?", true);
     }
 
     @OnClick(R.id.back_ImageView)
-    void backClick() {
+    void backSearchViewClick() {
         toggleView(searchHider_Constraint, searchCategory_TextView, deleteAllCategories_TextView);
-        //    getCategoriesLivData();
     }
 
     void toggleView(ConstraintLayout constraintLayout, TextView textView1, TextView textView2) {

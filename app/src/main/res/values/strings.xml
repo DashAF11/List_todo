@@ -103,7 +103,8 @@
 
     <string name="calendar_view">Calendar View</string>
     <string name="tasks_are_not_found">Tasks were not found!</string>
-    <string name="all_tasks_will">All the tasks will be deleted too!</string>
+    <string name="all_tasks_will">All the tasks within these categories will be deleted too!</string>
     <string name="today">Today</string>
+    <string name="categoryname">CategoryName</string>
 
 </resources>

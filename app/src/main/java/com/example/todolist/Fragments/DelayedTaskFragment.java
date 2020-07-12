@@ -71,7 +71,7 @@ public class DelayedTaskFragment extends Fragment {
         long currentTimeStamp = calendar.getTimeInMillis();
         Timber.d("currentTimeStamp : " + currentTimeStamp);
 
-        taskViewModel.getAllDelayedTaskLiveData(currentTimeStamp).observe(getViewLifecycleOwner(), taskDetailsEntities -> {
+        taskViewModel.getAllDelayedTaskLiveData(currentTimeStamp,"false").observe(getViewLifecycleOwner(), taskDetailsEntities -> {
             Timber.d("Delayed_Entities : %s", taskDetailsEntities.toString());
             updateUI(taskDetailsEntities);
         });

@@ -6,6 +6,7 @@ import android.util.SparseIntArray;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.todolist.Dao.TaskDetailsDao;
@@ -70,6 +71,20 @@ public class CalendarViewModel extends AndroidViewModel {
         return detailsEntities;
     }
 
+    public LiveData<List<TaskDetailsEntity>> calendarTaskDetailsLiveData(Date date) {
+        Calendar c = Calendar.getInstance();
+        c.setTimeInMillis(date.getTime());
+        c.set(Calendar.HOUR_OF_DAY, 0);
+        c.set(Calendar.MINUTE, 0);
+        c.set(Calendar.SECOND, 0);
+        long startTimeMillis = c.getTimeInMillis();
+        c.add(Calendar.HOUR, 24);
+        long endTimeMillis = c.getTimeInMillis();
+        LiveData<List<TaskDetailsEntity>> detailsEntities = taskDetailsDao.getTaskBetweenLiveData(startTimeMillis, endTimeMillis);
+
+        return detailsEntities;
+    }
+
     public void setCalendarEvents(List<CalendarEvent> events) {
         calendarEvent.postValue(events);
     }
@@ -114,5 +129,9 @@ public class CalendarViewModel extends AndroidViewModel {
                         Timber.e(e);
                     }
                 });
+    }
+
+    public LiveData<List<TaskDetailsEntity>> getCalendarEventLiveData() {
+        return  taskDetailsDao.getAllTasksLiveData();
     }
 }

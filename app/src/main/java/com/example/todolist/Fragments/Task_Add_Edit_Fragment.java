@@ -3,6 +3,7 @@ package com.example.todolist.Fragments;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -39,7 +40,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -226,9 +226,8 @@ public class Task_Add_Edit_Fragment extends Fragment {
 
     @OnClick(R.id.date_Constraint)
     public void dateClick() {
-        if (checkEditText_Click) {
-            hideSoftKeyboard(getActivity());
-        }
+        hideKeyboard(requireActivity());
+
         final Calendar c = Calendar.getInstance();
         mYear = c.get(Calendar.YEAR);
         mMonth = c.get(Calendar.MONTH);
@@ -262,9 +261,7 @@ public class Task_Add_Edit_Fragment extends Fragment {
 
     @OnClick(R.id.time_Constraint)
     public void timeClick() {
-        if (checkEditText_Click) {
-            hideSoftKeyboard(getActivity());
-        }
+        hideKeyboard(requireActivity());
 
         final Calendar c = Calendar.getInstance();
         mHour = c.get(Calendar.HOUR_OF_DAY);
@@ -450,14 +447,13 @@ public class Task_Add_Edit_Fragment extends Fragment {
         mBottomSheetDialog.show();
     }
 
-    public void hideSoftKeyboard(Activity activity) {
-
-        if (editTextClick) {
-            InputMethodManager inputMethodManager =
-                    (InputMethodManager) activity.getSystemService(
-                            Activity.INPUT_METHOD_SERVICE);
-            inputMethodManager.hideSoftInputFromWindow(
-                    Objects.requireNonNull(activity.getCurrentFocus()).getWindowToken(), 0);
+    private void hideKeyboard(Activity activity) {
+        if (activity != null && activity.getWindow() != null) {
+            activity.getWindow().getDecorView();
+            InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+            if (imm != null) {
+                imm.hideSoftInputFromWindow(activity.getWindow().getDecorView().getWindowToken(), 0);
+            }
         }
     }
 }

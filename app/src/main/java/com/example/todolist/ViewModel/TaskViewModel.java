@@ -53,16 +53,16 @@ public class TaskViewModel extends AndroidViewModel {
                 });
     }
 
-    public Single<List<TaskDetailsEntity>> getAllTaskLiveData(long catId) {
+    public Single<List<TaskDetailsEntity>> getAllTasksData(long catId) {
         return taskDetailsDao.getAllTasksData(catId).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }
 
-    public LiveData<List<TaskDetailsEntity>> getAllDelayedTaskLiveData(long timeStamp) {
-        return taskDetailsDao.getAllDelayTaskLiveData(timeStamp);
+    public LiveData<List<TaskDetailsEntity>> getAllDelayedTaskLiveData(long timeStamp,String status) {
+        return taskDetailsDao.getAllDelayTaskLiveData(timeStamp,status);
     }
 
-    public LiveData<List<TaskDetailsEntity>> getEveryThing(long catId, long timestamp, String status, String priority, String priority2, String priority3) {
-        return taskDetailsDao.getEveryThing(catId, timestamp, status, priority, priority2, priority3);
+    public LiveData<List<TaskDetailsEntity>> sortedData(long catId, long timestamp, String status, String priority, String priority2, String priority3) {
+        return taskDetailsDao.sortedData(catId, timestamp, status, priority, priority2, priority3);
     }
 
     public Single<List<TaskDetailsEntity>> getAllDoneTaskeData(String status) {
@@ -77,11 +77,11 @@ public class TaskViewModel extends AndroidViewModel {
         return taskDetailsDao.totalDelayTaskCount(timeStamp);
     }
 
-    public LiveData<Long> pendingTasks(long catId, String status) {
+    public Long pendingTasks(long catId, String status) {
         return taskDetailsDao.pendingTasks(catId, status);
     }
 
-    public LiveData<Long> totalTasks(long catId) {
+    public Long totalTasks(long catId) {
         return taskDetailsDao.totalTasks(catId);
     }
 

@@ -46,7 +46,7 @@ public class TaskDetailsEntity implements Parcelable {
     private String task_priority;
 
     @ColumnInfo(name = COLUMN_TASK_DONE_STATUS)
-    private String task_done_status;
+    private String task_done_status = "false";
 
     @ColumnInfo(name = COLUMN_TASK_ALARM)
     private String task_alarm;

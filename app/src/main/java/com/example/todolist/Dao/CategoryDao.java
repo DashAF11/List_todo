@@ -12,6 +12,8 @@ import com.example.todolist.Entities.CategoryEntity;
 
 import java.util.List;
 
+import io.reactivex.Single;
+
 import static com.example.todolist.RoomDB.RoomTables.COLUMN_CATEGORIES_ID;
 import static com.example.todolist.RoomDB.RoomTables.COLUMN_CATEGORIES_IMPORTANT;
 import static com.example.todolist.RoomDB.RoomTables.COLUMN_CATEGORIES_NAME;
@@ -32,6 +34,13 @@ public interface CategoryDao {
 
     @Query("SELECT * FROM " + TABLE_CATEGORIES)
     LiveData<List<CategoryEntity>> getAllCategoriesLiveData();
+
+    @Query("SELECT * FROM " + TABLE_CATEGORIES)
+    List<CategoryEntity> getAllCategoriesData();
+
+    @Query("SELECT * FROM " + TABLE_CATEGORIES)
+    Single<List<CategoryEntity>> getCategoriesData();
+
 
     @Query(" SELECT " + COLUMN_CATEGORIES_NAME + " FROM " + TABLE_CATEGORIES
             + " ORDER BY " + COLUMN_CATEGORIES_TIMESTAMP + " DESC ")
@@ -74,4 +83,10 @@ public interface CategoryDao {
 
     @Query(" SELECT " + COLUMN_CATEGORIES_ID + " FROM " + TABLE_CATEGORIES)
     LiveData<List<Long>> getCategoryIDs();
+
+    @Query(" SELECT " + COLUMN_CATEGORIES_ID + " FROM " + TABLE_CATEGORIES)
+    Single<List<Long>> getcategoryIDs();
+
+    @Query(" SELECT " + COLUMN_CATEGORIES_ID + " FROM " + TABLE_CATEGORIES)
+    List<Long> getcategoryIds();
 }

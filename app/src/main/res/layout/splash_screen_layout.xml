@@ -16,46 +16,41 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+        <ImageView
+            android:id="@+id/app_icon_ImageView"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:background="@drawable/app_icon"
+            android:contentDescription="AppIcon"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <ImageView
-                android:id="@+id/app_icon_ImageView"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:background="@drawable/app_icon"
-                android:contentDescription="AppIcon"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/todo_TextView" />
+        <TextView
+            android:id="@+id/todo_TextView"
+            style="@style/splashScreen_TextView"
+            android:text="To-Do"
+            app:layout_constraintBottom_toTopOf="@+id/bottom_Constraint"
+            app:layout_constraintEnd_toStartOf="@+id/list_TextView"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="@+id/bottom_Constraint" />
 
-            <TextView
-                android:id="@+id/todo_TextView"
-                style="@style/splashScreen_TextView"
-                android:text="To-Do"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+        <TextView
+            android:id="@+id/list_TextView"
+            style="@style/splashScreen_TextView"
+            android:text="List"
+            app:layout_constraintBottom_toTopOf="@+id/bottom_Constraint"
+            app:layout_constraintEnd_toEndOf="@+id/bottom_Constraint"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/todo_TextView" />
 
-            <TextView
-                android:id="@+id/list_TextView"
-                style="@style/splashScreen_TextView"
-                android:text="List"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/app_icon_ImageView" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/bottom_Constraint"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
             android:layout_marginBottom="@dimen/dp_50"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -65,9 +60,8 @@
                 android:id="@+id/cat_ImageView"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:layout_margin="5dp"
+                android:layout_margin="10dp"
                 android:src="@drawable/menu_icon"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -75,9 +69,8 @@
                 android:id="@+id/del_ImageView"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:layout_margin="5dp"
+                android:layout_margin="10dp"
                 android:src="@drawable/delayed_icon"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/cat_ImageView"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -85,9 +78,8 @@
                 android:id="@+id/don_ImageView"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:layout_margin="5dp"
+                android:layout_margin="10dp"
                 android:src="@drawable/done_icon"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/del_ImageView"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -95,9 +87,8 @@
                 android:id="@+id/imp_ImageView"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:layout_margin="5dp"
+                android:layout_margin="10dp"
                 android:src="@drawable/important_icon"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/don_ImageView"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -105,21 +96,29 @@
                 android:id="@+id/cal_ImageView"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:layout_margin="5dp"
+                android:layout_margin="10dp"
                 android:src="@drawable/calender_icon"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/imp_ImageView"
                 app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/version_TextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/cal_ImageView" />
 
             <View
                 android:id="@+id/view_bottom"
                 android:layout_width="150dp"
                 android:layout_height="2dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="5dp"
                 android:background="@color/light_grey"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/cal_ImageView" />
+                app:layout_constraintTop_toBottomOf="@+id/version_TextView" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -60,6 +60,21 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
         holder.categoryName_TextView.setText(categoryEntity.getCat_name());
         holder.importantCat_TextView.setText(categoryEntity.getFavourite());
 
+        if (categoryEntity.getTotalTask() == 0) {
+            holder.totalTask_TextView.setText(categoryEntity.getTotalTask() + " Task");
+        } else {
+            if (categoryEntity.getTotalTask() > 1) {
+                holder.totalTask_TextView.setText(categoryEntity.getTotalTask() + " Total Tasks, ");
+            } else {
+                holder.totalTask_TextView.setText(categoryEntity.getTotalTask() + " Total Task, ");
+            }
+            if (categoryEntity.getPendingTask() > 1) {
+                holder.pendingTask_TextView.setText(categoryEntity.getPendingTask() + " Pending Tasks");
+            } else {
+                holder.pendingTask_TextView.setText(categoryEntity.getPendingTask() + " Pending Task");
+            }
+        }
+
         if (categoryEntityList.get(position).getFavourite().equals("false")) {
             holder.favouriteCategory_ImageView.setBackgroundResource(R.drawable.important_icon_white);
         } else {

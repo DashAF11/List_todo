@@ -1,6 +1,8 @@
 package com.example.todolist.Activities;
 
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.Window;
 import android.view.WindowManager;
@@ -10,10 +12,10 @@ import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.todolist.R;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -22,6 +24,9 @@ public class SplashScreen extends AppCompatActivity {
     TextView todo_TextView;
     @BindView(R.id.list_TextView)
     TextView list_TextView;
+    @BindView(R.id.version_TextView)
+    TextView version_TextView;
+
     @BindView(R.id.app_icon_ImageView)
     ImageView app_icon_ImageView;
 
@@ -42,6 +47,14 @@ public class SplashScreen extends AppCompatActivity {
 //        list_TextView = (TextView) findViewById(R.id.list_TextView);
 //        todo_TextView = (TextView) findViewById(R.id.todo_TextView);
 //        app_icon_ImageView = (ImageView) findViewById(R.id.app_icon_ImageView);
+
+        try {
+            PackageInfo pInfo = this.getPackageManager().getPackageInfo(getPackageName(), 0);
+            String version = pInfo.versionName;
+            version_TextView.setText("Version " + version);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
 
         animations();
         SplashScreen.logolauncher lc = new SplashScreen.logolauncher();

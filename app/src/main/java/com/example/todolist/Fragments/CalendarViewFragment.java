@@ -2,6 +2,7 @@ package com.example.todolist.Fragments;
 
 import android.graphics.Canvas;
 import android.os.Bundle;
+import android.util.SparseIntArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,6 +34,7 @@ import com.shashank.sony.fancytoastlib.FancyToast;
 import com.shreyaspatil.MaterialDialog.BottomSheetMaterialDialog;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -42,7 +44,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.reactivex.CompletableObserver;
-import io.reactivex.SingleObserver;
 import io.reactivex.disposables.Disposable;
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator;
 import timber.log.Timber;
@@ -66,6 +67,9 @@ public class CalendarViewFragment extends Fragment implements CalendarViewAdapte
     NavController navController;
     NavOptions navOptions;
     Date todaysDate, clickedDate;
+    private SparseIntArray colorSparseIntArray;
+    int pType_high = 0, pType_med = 1, pType_low = 2;
+
     //swipe Left to delete_Task recyclerView
     ItemTouchHelper.SimpleCallback swipeEditTask = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
         @Override
@@ -119,7 +123,7 @@ public class CalendarViewFragment extends Fragment implements CalendarViewAdapte
             String taskName = String.valueOf(viewHolder.itemView.getTag(R.id.taskName));
             //  Timber.d("taskName : %s", taskName);
 
-            deleteDialogBox(catId, taskId, taskName, "Delete " + taskName + "?", "Are you sure want to delete this task?", false);
+            deleteDialogBox(viewHolder.getAdapterPosition(), catId, taskId, taskName, "Delete " + taskName + "?", "Are you sure want to delete this task?", false);
         }
     };
 
@@ -144,6 +148,11 @@ public class CalendarViewFragment extends Fragment implements CalendarViewAdapte
         todaysDate = Calendar.getInstance().getTime();
         navController = Navigation.findNavController(view);
         navOptions = new NavOptions.Builder().setPopUpTo(R.id.dashboardFragment, true).build();
+
+        colorSparseIntArray = new SparseIntArray();
+        colorSparseIntArray.append(pType_high, ContextCompat.getColor(getActivity(), R.color.red));
+        colorSparseIntArray.append(pType_med, ContextCompat.getColor(getActivity(), R.color.orange));
+        colorSparseIntArray.append(pType_low, ContextCompat.getColor(getActivity(), R.color.green));
 
         calendarView.setUseThreeLetterAbbreviation(true);
         calendarView.displayOtherMonthDays(false);
@@ -179,13 +188,36 @@ public class CalendarViewFragment extends Fragment implements CalendarViewAdapte
     }
 
     void getEvents() {
-        calendarViewModel.getAllTask();
+//        calendarViewModel.getAllTask();
+//        calendarViewModel.getCalendarEvents().observe(getViewLifecycleOwner(), (List<CalendarEvent> calenderEvents) -> {
+//            Timber.d("calenderEvents : %s", calenderEvents.toString());
+//
+//            if (calenderEvents == null) return;
+//            for (CalendarEvent calendarEvents : calenderEvents) {
+//                Event event = new Event(calendarEvents.getpTypeColor(), calendarEvents.getTimestamp(), calendarEvents);
+//                calendarView.addEvent(event);
+//            }
+//        });
 
-        calendarViewModel.getCalendarEvents().observe(getViewLifecycleOwner(), (List<CalendarEvent> calenderEvents) -> {
-            Timber.d("calenderEvents : %s", calenderEvents.toString());
+        calendarViewModel.getCalendarEventLiveData().observe(getViewLifecycleOwner(), taskDetailsEntities -> {
+            List<CalendarEvent> allCalendarEvents = new ArrayList<>();
+            for (TaskDetailsEntity entity : taskDetailsEntities) {
+                CalendarEvent calendarEvent = new CalendarEvent();
+                calendarEvent.setTaskId(entity.getTask_id());
+                if (entity.getTask_priority().equals("high")) {
+                    calendarEvent.setpTypeColor(colorSparseIntArray.get(pType_high));
+                } else if (entity.getTask_priority().equals("med")) {
+                    calendarEvent.setpTypeColor(colorSparseIntArray.get(pType_med));
+                } else if (entity.getTask_priority().equals("low")) {
+                    calendarEvent.setpTypeColor(colorSparseIntArray.get(pType_low));
+                }
+                calendarEvent.setTimestamp(entity.getTimestamp());
+                allCalendarEvents.add(calendarEvent);
+                Timber.d("allCalendarEvents : %s", calendarEvent.toString());
+            }
 
-            if (calenderEvents == null) return;
-            for (CalendarEvent calendarEvents : calenderEvents) {
+            if (allCalendarEvents == null) return;
+            for (CalendarEvent calendarEvents : allCalendarEvents) {
                 Event event = new Event(calendarEvents.getpTypeColor(), calendarEvents.getTimestamp(), calendarEvents);
                 calendarView.addEvent(event);
             }
@@ -193,35 +225,21 @@ public class CalendarViewFragment extends Fragment implements CalendarViewAdapte
     }
 
     private void getTodaysTasks(Date todaysDate) {
-        calendarViewModel.calendarTaskDetails(todaysDate).subscribe(new SingleObserver<List<TaskDetailsEntity>>() {
-            @Override
-            public void onSubscribe(Disposable d) {
+        if (todaysDate == null) return;
 
-            }
-
-            @Override
-            public void onSuccess(List<TaskDetailsEntity> taskDetailsEntities) {
-                Timber.d("calendarTaskDetails_todays : %s", taskDetailsEntities.toString());
-
-                if (taskDetailsEntities.size() == 0) {
-                    empty_calendarConstraint.setVisibility(View.VISIBLE);
-                    calendarRecyclerView.setVisibility(View.GONE);
-                } else {
-                    empty_calendarConstraint.setVisibility(View.GONE);
-                    calendarRecyclerView.setVisibility(View.VISIBLE);
-                    calendarViewAdapter.setCalendarTaskList(taskDetailsEntities);
-                }
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
+        calendarViewModel.calendarTaskDetailsLiveData(todaysDate).observe(getViewLifecycleOwner(), taskDetailsEntities -> {
+            if (taskDetailsEntities.size() == 0) {
+                empty_calendarConstraint.setVisibility(View.VISIBLE);
+                calendarRecyclerView.setVisibility(View.GONE);
+            } else {
+                empty_calendarConstraint.setVisibility(View.GONE);
+                calendarRecyclerView.setVisibility(View.VISIBLE);
+                calendarViewAdapter.setCalendarTaskList(taskDetailsEntities);
             }
         });
     }
 
-    public void deleteDialogBox(long catId, long taskId, String taskName, String Title, String
-            message, boolean allTask) {
+    public void deleteDialogBox(int position, long catId, long taskId, String taskName, String Title, String message, boolean allTask) {
 
         BottomSheetMaterialDialog mBottomSheetDialog = new BottomSheetMaterialDialog.Builder(getActivity())
 
@@ -230,20 +248,21 @@ public class CalendarViewFragment extends Fragment implements CalendarViewAdapte
                 .setCancelable(false)
                 .setPositiveButton(getString(R.string.delete), R.drawable.delete_white_icon, (dialogInterface, which) -> {
 
-
                     if (allTask) {
                         taskViewModel.deleteAllTasks();
                         FancyToast.makeText(getActivity(), getString(R.string.all_tasks_deleted), FancyToast.LENGTH_SHORT, FancyToast.SUCCESS, false).show();
                     } else {
                         taskViewModel.deleteSingleTask(catId, taskId);
+                        calendarViewAdapter.notifyItemRemoved(position);
                         FancyToast.makeText(getActivity(), taskName + " " + getString(R.string.deleted), FancyToast.LENGTH_SHORT, FancyToast.DEFAULT, false).show();
                     }
-                    getTodaysTasks(clickedDate);
+                    getEvents();
                     dialogInterface.dismiss();
                 })
                 .setNegativeButton(getString(R.string.cancel), R.drawable.close_darkpurple_icon, (dialogInterface, which) -> {
                     FancyToast.makeText(getActivity(), getString(R.string.canceled), FancyToast.LENGTH_SHORT, FancyToast.DEFAULT, false).show();
-                    getTodaysTasks(clickedDate);
+                    calendarViewAdapter.notifyItemRemoved(position + 1);    //notifies the RecyclerView Adapter that data in adapter has been removed at a particular position.
+                    calendarViewAdapter.notifyItemRangeChanged(position, calendarViewAdapter.getItemCount());   //notifies the RecyclerView Adapter that positions of element in adapter has been changed from position(removed element index to end of list), please update it.
                     dialogInterface.dismiss();
                 })
                 .build();

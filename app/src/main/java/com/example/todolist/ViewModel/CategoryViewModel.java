@@ -15,6 +15,7 @@ import java.util.List;
 
 import io.reactivex.Completable;
 import io.reactivex.CompletableObserver;
+import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
@@ -23,7 +24,7 @@ import timber.log.Timber;
 public class CategoryViewModel extends AndroidViewModel {
 
 
-    private MutableLiveData<List<String>> categoryNameList;
+    private MutableLiveData<List<CategoryEntity>> categoryEntity = new MutableLiveData<>();
 
     private RoomDB roomDB;
     CategoryDao categoryDao;
@@ -33,11 +34,47 @@ public class CategoryViewModel extends AndroidViewModel {
 
         roomDB = RoomDB.getRoomDB(application);
         categoryDao = roomDB.categoryDao();
-        categoryNameList = new MutableLiveData<>();
+    }
+
+    public MutableLiveData<List<CategoryEntity>> getCategoryMutableLiveData() {
+        return categoryEntity;
+    }
+
+    public void setCategoryData(List<CategoryEntity> categoryData) {
+        categoryEntity.postValue(categoryData);
+    }
+
+    public void getAllCategory() {
+        Completable.fromAction(() -> {
+            List<CategoryEntity> categoryEntities = categoryDao.getAllCategoriesData();
+            setCategoryData(categoryEntities);
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new CompletableObserver() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Timber.e(e);
+                    }
+                });
+
     }
 
     public LiveData<List<CategoryEntity>> getLiveCategoriesData() {
         return categoryDao.getAllCategoriesLiveData();
+    }
+
+    public Single<List<CategoryEntity>> getCategoriesData() {
+        return categoryDao.getCategoriesData().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }
 
     public LiveData<Integer> totalCategoryCount() {
@@ -79,8 +116,12 @@ public class CategoryViewModel extends AndroidViewModel {
         return categoryDao.getAllCategoriesNamesLiveData();
     }
 
-    public LiveData<List<Long>> getCategoryIDs() {
-        return categoryDao.getCategoryIDs();
+    public Single<List<Long>> getCategoryIDs() {
+        return categoryDao.getcategoryIDs().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public List<Long> getCategoryIds() {
+        return categoryDao.getcategoryIds();
     }
 
 //    public Completable getAllCategoryNames() {
@@ -97,11 +138,8 @@ public class CategoryViewModel extends AndroidViewModel {
 //    }
 
     public void deleteCategory(long catId) {
-
         Completable.fromAction(() -> {
-
             categoryDao.deleteSingleCategory(catId);
-
         }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new CompletableObserver() {
