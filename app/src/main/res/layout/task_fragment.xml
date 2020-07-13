@@ -267,61 +267,36 @@
 
             <CheckBox
                 android:id="@+id/delayedTask_CheckBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:backgroundTint="@color/dark_purple_background"
-                android:buttonTint="@color/dark_purple_background"
+                style="@style/filterCheckBox"
                 android:text="@string/delayed"
-                android:textColor="@color/gray"
-                android:textStyle="normal"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/applyFilter_TextView" />
 
             <CheckBox
                 android:id="@+id/doneTask_CheckBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:backgroundTint="@color/dark_purple_background"
-                android:buttonTint="@color/dark_purple_background"
+                style="@style/filterCheckBox"
                 android:text="@string/done"
-                android:textColor="@color/gray"
-                android:textStyle="normal"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/delayedTask_CheckBox" />
 
             <CheckBox
                 android:id="@+id/priorityHigh_CheckBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:backgroundTint="@color/dark_purple_background"
-                android:buttonTint="@color/dark_purple_background"
+                style="@style/filterCheckBox"
                 android:text="@string/priority_high"
-                android:textColor="@color/gray"
-                android:textStyle="normal"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/doneTask_CheckBox" />
 
             <CheckBox
                 android:id="@+id/priorityMed_CheckBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:backgroundTint="@color/dark_purple_background"
-                android:buttonTint="@color/dark_purple_background"
+                style="@style/filterCheckBox"
                 android:text="@string/priority_med"
-                android:textColor="@color/gray"
-                android:textStyle="normal"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/priorityHigh_CheckBox" />
 
             <CheckBox
                 android:id="@+id/priorityLow_CheckBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:backgroundTint="@color/dark_purple_background"
-                android:buttonTint="@color/dark_purple_background"
+                style="@style/filterCheckBox"
                 android:text="@string/priority_low"
-                android:textColor="@color/gray"
-                android:textStyle="normal"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/priorityMed_CheckBox" />
 

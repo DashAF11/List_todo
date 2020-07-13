@@ -48,10 +48,6 @@ public class CalendarViewModel extends AndroidViewModel {
         colorSparseIntArray.append(pType_low, ContextCompat.getColor(application, R.color.green));
     }
 
-    public MutableLiveData<List<CalendarEvent>> getCalendarEvents() {
-        return calendarEvent;
-    }
-
     public MutableLiveData<List<TaskDetailsEntity>> getTaskDetailsList() {
         return taskDetails;
     }
@@ -85,6 +81,10 @@ public class CalendarViewModel extends AndroidViewModel {
         return detailsEntities;
     }
 
+    public MutableLiveData<List<CalendarEvent>> getCalendarEvents() {
+        return calendarEvent;
+    }
+
     public void setCalendarEvents(List<CalendarEvent> events) {
         calendarEvent.postValue(events);
     }
@@ -98,12 +98,16 @@ public class CalendarViewModel extends AndroidViewModel {
             for (TaskDetailsEntity entity : taskDetailsEntities) {
                 CalendarEvent calendarEvent = new CalendarEvent();
                 calendarEvent.setTaskId(entity.getTask_id());
-                if (entity.getTask_priority().equals("high")) {
-                    calendarEvent.setpTypeColor(colorSparseIntArray.get(pType_high));
-                } else if (entity.getTask_priority().equals("med")) {
-                    calendarEvent.setpTypeColor(colorSparseIntArray.get(pType_med));
-                } else if (entity.getTask_priority().equals("low")) {
-                    calendarEvent.setpTypeColor(colorSparseIntArray.get(pType_low));
+                switch (entity.getTask_priority()) {
+                    case "high":
+                        calendarEvent.setpTypeColor(colorSparseIntArray.get(pType_high));
+                        break;
+                    case "med":
+                        calendarEvent.setpTypeColor(colorSparseIntArray.get(pType_med));
+                        break;
+                    case "low":
+                        calendarEvent.setpTypeColor(colorSparseIntArray.get(pType_low));
+                        break;
                 }
                 calendarEvent.setTimestamp(entity.getTimestamp());
                 allCalendarEvents.add(calendarEvent);

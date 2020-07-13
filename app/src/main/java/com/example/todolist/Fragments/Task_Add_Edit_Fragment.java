@@ -129,7 +129,6 @@ public class Task_Add_Edit_Fragment extends Fragment {
                     timeValue_TextView.setText(taskDetailsEntity.getTask_time());
                 }
 
-
                 if (!taskDetailsEntity.getTask_date().equals("false")) {
                     taskDate = taskDetailsEntity.getTask_date();
                     taskTime = taskDetailsEntity.getTask_time();
@@ -221,6 +220,7 @@ public class Task_Add_Edit_Fragment extends Fragment {
 
     @OnClick(R.id.priority_Constraint)
     public void priority_ArrowClick() {
+        hideKeyboard(requireActivity());
         toggleView(priorityHider_Constraint, priorityArrow_ImageView);
     }
 
@@ -366,8 +366,15 @@ public class Task_Add_Edit_Fragment extends Fragment {
             }
             calendar.set(Calendar.HOUR, Integer.parseInt(hr_forTS));
             calendar.set(Calendar.MINUTE, Integer.parseInt(minute_forTS));
-            calendar.set(Calendar.SECOND, 0);
-            calendar.set(Calendar.MILLISECOND, 0);
+
+            Calendar c = Calendar.getInstance();
+            String timestamp = String.valueOf(c.getTimeInMillis()),sec, milies;
+            sec=timestamp.substring(9,11);
+            milies=timestamp.substring(11, 13);
+
+            calendar.set(Calendar.SECOND, Integer.parseInt(sec));
+            calendar.set(Calendar.MILLISECOND, Integer.parseInt(milies));
+
             if (AM_PM.equals(" AM")) {
                 calendar.set(Calendar.AM_PM, 0);
             } else {

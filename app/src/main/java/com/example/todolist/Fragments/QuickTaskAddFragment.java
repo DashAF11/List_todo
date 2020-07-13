@@ -218,12 +218,12 @@ public class QuickTaskAddFragment extends Fragment {
 
     @OnClick(R.id.priority_Constraint)
     public void priority_ArrowClick() {
+        hideKeyboard(requireActivity());
         toggleView(priorityHider_Constraint, priorityArrow_ImageView);
     }
 
     @OnClick(R.id.date_Constraint)
     public void dateClick() {
-
         final Calendar c = Calendar.getInstance();
         mYear = c.get(Calendar.YEAR);
         mMonth = c.get(Calendar.MONTH);
@@ -257,7 +257,6 @@ public class QuickTaskAddFragment extends Fragment {
 
     @OnClick(R.id.time_Constraint)
     public void timeClick() {
-
         final Calendar c = Calendar.getInstance();
         mHour = c.get(Calendar.HOUR_OF_DAY);
         mMinute = c.get(Calendar.MINUTE);
@@ -362,8 +361,14 @@ public class QuickTaskAddFragment extends Fragment {
             }
             calendar.set(Calendar.HOUR, Integer.parseInt(hr_forTS));
             calendar.set(Calendar.MINUTE, Integer.parseInt(minute_forTS));
-            calendar.set(Calendar.SECOND, 0);
-            calendar.set(Calendar.MILLISECOND, 0);
+
+            Calendar c = Calendar.getInstance();
+            String timestamp = String.valueOf(c.getTimeInMillis()), sec, milies;
+            sec = timestamp.substring(9, 11);
+            milies = timestamp.substring(11, 13);
+
+            calendar.set(Calendar.SECOND, Integer.parseInt(sec));
+            calendar.set(Calendar.MILLISECOND, Integer.parseInt(milies));
             if (AM_PM.equals(" AM")) {
                 calendar.set(Calendar.AM_PM, 0);
             } else {

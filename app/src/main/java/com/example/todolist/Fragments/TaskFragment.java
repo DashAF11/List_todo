@@ -427,7 +427,7 @@ public class TaskFragment extends Fragment implements TaskDetailsAdapter.Recycle
     @OnClick(R.id.backTask_ImageView)
     void backClick() {
         toggleView(searchTaskHider_Constraint, searchTask_TextView, deleteAllTask_TextView);
-         getAllTasksData();
+        getAllTasksData();
     }
 
     void toggleView(ConstraintLayout constraintLayout, TextView textView1, TextView textView2) {
@@ -456,5 +456,11 @@ public class TaskFragment extends Fragment implements TaskDetailsAdapter.Recycle
         priorityHigh_CheckBox.setChecked(false);
         priorityMed_CheckBox.setChecked(false);
         priorityLow_CheckBox.setChecked(false);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getAllTasksData();
     }
 }

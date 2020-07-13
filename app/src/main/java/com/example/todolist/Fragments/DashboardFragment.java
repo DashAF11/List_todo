@@ -1,6 +1,8 @@
 package com.example.todolist.Fragments;
 
 import android.app.Dialog;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +11,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
@@ -265,7 +268,7 @@ public class DashboardFragment extends Fragment {
         long currentTimeStamp = calendar.getTimeInMillis();
         // Timber.d("currentTimeStamp : " + currentTimeStamp);
 
-        taskViewModel.totalDelayTaskCount(currentTimeStamp).observe(getViewLifecycleOwner(), count -> {
+        taskViewModel.totalDelayTaskCount(currentTimeStamp, "false").observe(getViewLifecycleOwner(), count -> {
             //    Timber.d("totalDelayTaskCount : " + count);
             delayCount_TextView.setText("" + count);
         });
@@ -292,5 +295,17 @@ public class DashboardFragment extends Fragment {
     @OnClick(R.id.calendar_ImageView)
     void calendarClick() {
         navController.navigate(R.id.action_dashboardFragment_to_calendarViewFragment);
+    }
+
+    @OnClick(R.id.version_ImageView)
+    void getVersionName() {
+        try {
+            PackageInfo pInfo = getActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0);
+            String version = pInfo.versionName;
+
+            FancyToast.makeText(getActivity(), "Version : " + version, Toast.LENGTH_SHORT, FancyToast.INFO,false).show();
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 }

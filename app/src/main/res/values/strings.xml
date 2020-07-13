@@ -4,6 +4,7 @@
     <item name="catName" type="id" />
     <item name="taskId" type="id" />
     <item name="taskName" type="id" />
+    <item name="taskTimeStamp" type="id" />
     <item name="taskDetails" type="id" />
 
     <string name="app_name">ToDo List</string>

@@ -128,6 +128,7 @@ public class CalendarViewAdapter extends RecyclerView.Adapter<CalendarViewAdapte
         holder.itemView.setTag(R.id.catId, taskDetailsEntity.getTask_catID());
         holder.itemView.setTag(R.id.taskId, taskDetailsEntity.getTask_id());
         holder.itemView.setTag(R.id.taskName, taskDetailsEntity.getTask_name());
+        holder.itemView.setTag(R.id.taskTimeStamp, taskDetailsEntity.getTimestamp());
         holder.itemView.setTag(R.id.taskDetails, taskDetailsEntity);
     }
 

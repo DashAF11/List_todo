@@ -69,6 +69,7 @@ public class CalendarViewFragment extends Fragment implements CalendarViewAdapte
     Date todaysDate, clickedDate;
     private SparseIntArray colorSparseIntArray;
     int pType_high = 0, pType_med = 1, pType_low = 2;
+    List<CalendarEvent> calendarEventArrayList = new ArrayList<>();
 
     //swipe Left to delete_Task recyclerView
     ItemTouchHelper.SimpleCallback swipeEditTask = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
@@ -119,11 +120,13 @@ public class CalendarViewFragment extends Fragment implements CalendarViewAdapte
         public void onSwiped(@NonNull final RecyclerView.ViewHolder viewHolder, int i) {
 
             long catId = (long) viewHolder.itemView.getTag(R.id.catId),
-                    taskId = (long) viewHolder.itemView.getTag(R.id.taskId);
+                    taskId = (long) viewHolder.itemView.getTag(R.id.taskId),
+                    taskTimeStamp = (long) viewHolder.itemView.getTag(R.id.taskTimeStamp);
+            ;
             String taskName = String.valueOf(viewHolder.itemView.getTag(R.id.taskName));
             //  Timber.d("taskName : %s", taskName);
 
-            deleteDialogBox(viewHolder.getAdapterPosition(), catId, taskId, taskName, "Delete " + taskName + "?", "Are you sure want to delete this task?", false);
+            deleteDialogBox(viewHolder.getAdapterPosition(), catId, taskId, taskName, taskTimeStamp, "Delete " + taskName + "?", "Are you sure want to delete this task?", false);
         }
     };
 
@@ -166,7 +169,6 @@ public class CalendarViewFragment extends Fragment implements CalendarViewAdapte
         calendarViewAdapter = new CalendarViewAdapter(getActivity(), this);
         calendarRecyclerView.setAdapter(calendarViewAdapter);
 
-
         getEvents();
         getTodaysTasks(todaysDate);
 
@@ -188,40 +190,51 @@ public class CalendarViewFragment extends Fragment implements CalendarViewAdapte
     }
 
     void getEvents() {
-//        calendarViewModel.getAllTask();
-//        calendarViewModel.getCalendarEvents().observe(getViewLifecycleOwner(), (List<CalendarEvent> calenderEvents) -> {
-//            Timber.d("calenderEvents : %s", calenderEvents.toString());
-//
-//            if (calenderEvents == null) return;
-//            for (CalendarEvent calendarEvents : calenderEvents) {
-//                Event event = new Event(calendarEvents.getpTypeColor(), calendarEvents.getTimestamp(), calendarEvents);
-//                calendarView.addEvent(event);
-//            }
-//        });
 
-        calendarViewModel.getCalendarEventLiveData().observe(getViewLifecycleOwner(), taskDetailsEntities -> {
-            List<CalendarEvent> allCalendarEvents = new ArrayList<>();
-            for (TaskDetailsEntity entity : taskDetailsEntities) {
-                CalendarEvent calendarEvent = new CalendarEvent();
-                calendarEvent.setTaskId(entity.getTask_id());
-                if (entity.getTask_priority().equals("high")) {
-                    calendarEvent.setpTypeColor(colorSparseIntArray.get(pType_high));
-                } else if (entity.getTask_priority().equals("med")) {
-                    calendarEvent.setpTypeColor(colorSparseIntArray.get(pType_med));
-                } else if (entity.getTask_priority().equals("low")) {
-                    calendarEvent.setpTypeColor(colorSparseIntArray.get(pType_low));
-                }
-                calendarEvent.setTimestamp(entity.getTimestamp());
-                allCalendarEvents.add(calendarEvent);
-                Timber.d("allCalendarEvents : %s", calendarEvent.toString());
+        calendarViewModel.getAllTask();
+        calendarViewModel.getCalendarEvents().observe(getViewLifecycleOwner(), (List<CalendarEvent> calenderEvents) -> {
+            Timber.d("calenderEvents : %d", calenderEvents.size());
+
+            for (int i = 0; i < calenderEvents.size(); i++) {
+                Timber.d("getTimestamp : %d", calenderEvents.get(i).getTimestamp());
             }
+            calendarEventArrayList.addAll(calenderEvents);
 
-            if (allCalendarEvents == null) return;
-            for (CalendarEvent calendarEvents : allCalendarEvents) {
+            if (calenderEvents == null) return;
+            for (CalendarEvent calendarEvents : calendarEventArrayList) {
                 Event event = new Event(calendarEvents.getpTypeColor(), calendarEvents.getTimestamp(), calendarEvents);
                 calendarView.addEvent(event);
             }
         });
+
+        calendarEventArrayList.clear();
+
+//        calendarViewModel.getCalendarEventLiveData().observe(getViewLifecycleOwner(), taskDetailsEntities -> {
+//            List<CalendarEvent> allCalendarEvents = new ArrayList<>();
+//            for (TaskDetailsEntity entity : taskDetailsEntities) {
+//                CalendarEvent calendarEvent = new CalendarEvent();
+//                calendarEvent.setTaskId(entity.getTask_id());
+//                if (entity.getTask_priority().equals("high")) {
+//                    calendarEvent.setpTypeColor(colorSparseIntArray.get(pType_high));
+//                } else if (entity.getTask_priority().equals("med")) {
+//                    calendarEvent.setpTypeColor(colorSparseIntArray.get(pType_med));
+//                } else if (entity.getTask_priority().equals("low")) {
+//                    calendarEvent.setpTypeColor(colorSparseIntArray.get(pType_low));
+//                }
+//                calendarEvent.setTimestamp(entity.getTimestamp());
+//                allCalendarEvents.add(calendarEvent);
+//                Timber.d("allCalendarEvents : %s", calendarEvent.toString());
+//            }
+//
+//            if (allCalendarEvents == null) return;
+//            for (CalendarEvent calendarEvents : allCalendarEvents) {
+//                Event event = new Event(calendarEvents.getpTypeColor(), calendarEvents.getTimestamp(), calendarEvents);
+//                calendarView.addEvent(event);
+//            }
+
+        //            allCalendarEvents.clear();
+
+//        });
     }
 
     private void getTodaysTasks(Date todaysDate) {
@@ -239,8 +252,8 @@ public class CalendarViewFragment extends Fragment implements CalendarViewAdapte
         });
     }
 
-    public void deleteDialogBox(int position, long catId, long taskId, String taskName, String Title, String message, boolean allTask) {
-
+    public void deleteDialogBox(int position, long catId, long taskId, String taskName, long taskTimeStamp,
+                                String Title, String message, boolean allTask) {
         BottomSheetMaterialDialog mBottomSheetDialog = new BottomSheetMaterialDialog.Builder(getActivity())
 
                 .setTitle(Title)
@@ -256,7 +269,12 @@ public class CalendarViewFragment extends Fragment implements CalendarViewAdapte
                         calendarViewAdapter.notifyItemRemoved(position);
                         FancyToast.makeText(getActivity(), taskName + " " + getString(R.string.deleted), FancyToast.LENGTH_SHORT, FancyToast.DEFAULT, false).show();
                     }
-                    getEvents();
+                    Timber.d("Deleted taskTimeStamp : %d", taskTimeStamp);
+                    //  calendarView.removeEvents(taskTimeStamp);
+                   // calendarView.removeEvent(new Event(Color.WHITE, taskTimeStamp));
+                    calendarView.removeEvents(taskTimeStamp);
+
+                    //   getEvents();
                     dialogInterface.dismiss();
                 })
                 .setNegativeButton(getString(R.string.cancel), R.drawable.close_darkpurple_icon, (dialogInterface, which) -> {

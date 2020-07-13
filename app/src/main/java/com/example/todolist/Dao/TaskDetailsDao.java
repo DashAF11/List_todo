@@ -104,8 +104,9 @@ public interface TaskDetailsDao {
 
     @Query("SELECT  COUNT (" + COLUMN_TASK_NAME + ")"
             + " FROM " + TABLE_TASK
-            + " WHERE " + COLUMN_TASK_TIMESTAMP + "<:currentTimeStamp")
-    LiveData<Integer> totalDelayTaskCount(long currentTimeStamp);
+            + " WHERE " + COLUMN_TASK_TIMESTAMP + "<:currentTimeStamp"
+    + " AND "+ COLUMN_TASK_DONE_STATUS + "=:status")
+    LiveData<Integer> totalDelayTaskCount(long currentTimeStamp,String status);
 
     @Query("SELECT * FROM " + TABLE_TASK
             + " WHERE " + COLUMN_TASK_CATID + "=:catId")
@@ -123,12 +124,10 @@ public interface TaskDetailsDao {
             + " DESC ")
     LiveData<List<TaskDetailsEntity>> getTaskBetweenLiveData(long startTimeMillis, long endTimeMillis);
 
-    @Query("SELECT * FROM " + TABLE_TASK
-            + " ORDER BY " + COLUMN_TASK_TIMESTAMP + " DESC ")
+    @Query("SELECT * FROM " + TABLE_TASK)
     List<TaskDetailsEntity> getAllTasks();
 
-    @Query("SELECT * FROM " + TABLE_TASK
-            + " ORDER BY " + COLUMN_TASK_TIMESTAMP + " DESC ")
+    @Query("SELECT * FROM " + TABLE_TASK)
     LiveData<List<TaskDetailsEntity>> getAllTasksLiveData();
 
     @Query(" SELECT COUNT ( " + COLUMN_TASK_NAME + ")"

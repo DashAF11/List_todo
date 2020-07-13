@@ -73,8 +73,8 @@ public class TaskViewModel extends AndroidViewModel {
         return taskDetailsDao.totalDoneTaskCount("true");
     }
 
-    public LiveData<Integer> totalDelayTaskCount(long timeStamp) {
-        return taskDetailsDao.totalDelayTaskCount(timeStamp);
+    public LiveData<Integer> totalDelayTaskCount(long timeStamp, String status) {
+        return taskDetailsDao.totalDelayTaskCount(timeStamp,status);
     }
 
     public Long pendingTasks(long catId, String status) {
