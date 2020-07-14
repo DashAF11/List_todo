@@ -56,8 +56,8 @@ public interface TaskDetailsDao {
 
     @Query("SELECT * FROM " + TABLE_TASK
             + " WHERE " + COLUMN_TASK_TIMESTAMP + "<:currentTimeStamp"
-    + " AND " +COLUMN_TASK_DONE_STATUS + "=:status")
-    LiveData<List<TaskDetailsEntity>> getAllDelayTaskLiveData(long currentTimeStamp,String status);
+            + " AND " + COLUMN_TASK_DONE_STATUS + "=:status")
+    LiveData<List<TaskDetailsEntity>> getAllDelayTaskLiveData(long currentTimeStamp, String status);
 
     @Query(" UPDATE " + TABLE_TASK
             + " SET " + COLUMN_TASK_DONE_STATUS + "=:status"
@@ -75,6 +75,10 @@ public interface TaskDetailsDao {
 
     @Query("DELETE FROM " + TABLE_TASK)
     void deleteAllTasks();
+
+    @Query("DELETE FROM " + TABLE_TASK
+            + " WHERE " + COLUMN_TASK_CATID + "!=:catId")
+    void deleteAllTasks_withCatIDsPresent(long catId);
 
     @Query("SELECT * FROM " + TABLE_TASK
             + " WHERE " + COLUMN_TASK_DONE_STATUS + "=:doneStatus")
@@ -105,8 +109,8 @@ public interface TaskDetailsDao {
     @Query("SELECT  COUNT (" + COLUMN_TASK_NAME + ")"
             + " FROM " + TABLE_TASK
             + " WHERE " + COLUMN_TASK_TIMESTAMP + "<:currentTimeStamp"
-    + " AND "+ COLUMN_TASK_DONE_STATUS + "=:status")
-    LiveData<Integer> totalDelayTaskCount(long currentTimeStamp,String status);
+            + " AND " + COLUMN_TASK_DONE_STATUS + "=:status")
+    LiveData<Integer> totalDelayTaskCount(long currentTimeStamp, String status);
 
     @Query("SELECT * FROM " + TABLE_TASK
             + " WHERE " + COLUMN_TASK_CATID + "=:catId")

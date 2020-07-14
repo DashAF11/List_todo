@@ -155,12 +155,6 @@ public class ImportantCategoryFragment extends Fragment implements ImportantCate
     public void singleClickListener(View view, int position, long catId, String catName) {
         Timber.d("Category  ID : %d, Name : %s", catId, catName);
 
-//        SharedPreferences spfUser;
-//        spfUser = getActivity().getSharedPreferences(StorageConstants.KEY_CATEGORYDETAILS, Context.MODE_PRIVATE);
-//        spfUser.edit().putLong(KEY_CATID, catId).apply();
-//        spfUser.edit().putString(KEY_CATNAME, catName).apply();
-//        navController.navigate(R.id.action_dashboardFragment_to_taskFragment);
-
         DashboardFragmentDirections.ActionDashboardFragmentToTaskFragment action = DashboardFragmentDirections.actionDashboardFragmentToTaskFragment();
         action.setCatId(catId);
         action.setCatName(catName);

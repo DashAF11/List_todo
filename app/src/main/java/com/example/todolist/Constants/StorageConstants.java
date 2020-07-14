@@ -1,6 +1,5 @@
 package com.example.todolist.Constants;
 
 public interface StorageConstants {
-
-    String KEY_CATEGORYDETAILS = "cat_details";
+    String TODO_USER = "todo_user";
 }

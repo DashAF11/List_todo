@@ -82,6 +82,12 @@ public class DelayedAdapter extends RecyclerView.Adapter<DelayedAdapter.ViewHold
                 holder.priorityColor_donTask_View.setBackgroundColor(rgb(0, 128, 0));
                 break;
         }
+
+        holder.itemView.setTag(R.id.catId, entity.getTask_catID());
+        holder.itemView.setTag(R.id.taskId, entity.getTask_id());
+        holder.itemView.setTag(R.id.taskName, entity.getTask_name());
+        holder.itemView.setTag(R.id.catName, entity.getTask_catName());
+        holder.itemView.setTag(R.id.taskDetails, entity);
     }
 
     @Override

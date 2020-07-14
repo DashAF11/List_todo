@@ -1,9 +1,12 @@
 package com.example.todolist.Fragments;
 
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.DatePickerDialog;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -31,6 +34,8 @@ import androidx.navigation.NavOptions;
 import androidx.navigation.Navigation;
 
 import com.example.todolist.Entities.TaskDetailsEntity;
+import com.example.todolist.Notification.AlertReceiver;
+import com.example.todolist.Notification.NotificationHelper;
 import com.example.todolist.R;
 import com.example.todolist.ViewModel.TaskViewModel;
 import com.shashank.sony.fancytoastlib.FancyToast;
@@ -82,11 +87,14 @@ public class Task_Add_Edit_Fragment extends Fragment {
             taskAlarm = "false", mytimeHR_M, hr_forTS, minute_forTS, AM_PM;
     long taskTimeStamp, catId, taskId;
     int mYear, mMonth, mDay, mHour, mMinute, day_forTS, month_forTS, year_forTS;
-    boolean editTextClick = false, checkEditText_Click, fromCalendar;
+    boolean editTextClick = false, checkEditText_Click, fromCalendar, fromDelayed;
     TaskViewModel taskViewModel;
     NavController navController;
-    NavOptions navOptions, navOptions2;
+    NavOptions navOptions, navOptions2, navOptions3;
+    Calendar calendar;
     TaskDetailsEntity taskDetailsEntity = new TaskDetailsEntity();
+
+    private NotificationHelper notificationHelper;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -104,6 +112,8 @@ public class Task_Add_Edit_Fragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
 
+        notificationHelper = new NotificationHelper(getActivity());
+
         low_RadioButton.setChecked(true);
         if (getArguments() != null) {
             Task_Add_Edit_FragmentArgs args = Task_Add_Edit_FragmentArgs.fromBundle(getArguments());
@@ -111,6 +121,7 @@ public class Task_Add_Edit_Fragment extends Fragment {
             catId = args.getCatId();
             catName = args.getCatName();
             fromCalendar = args.getFromCalendar();
+            fromDelayed = args.getFromDelayed();
             headerTask_TextView.setText(headerText);
 
             TaskDetailsEntity taskDetailsEntity = args.getTaskDetails();
@@ -173,6 +184,7 @@ public class Task_Add_Edit_Fragment extends Fragment {
         navController = Navigation.findNavController(view);
         navOptions = new NavOptions.Builder().setPopUpTo(R.id.taskFragment, true).build();
         navOptions2 = new NavOptions.Builder().setPopUpTo(R.id.calendarViewFragment2, true).build();
+        navOptions3 = new NavOptions.Builder().setPopUpTo(R.id.dashboardFragment, true).build();
 
         taskViewModel = ViewModelProviders.of(this).get(TaskViewModel.class);
 
@@ -358,7 +370,7 @@ public class Task_Add_Edit_Fragment extends Fragment {
             String finalDate = timeFormat.format(myDate);
             Timber.d("finalDate : %s", finalDate);
 
-            Calendar calendar = Calendar.getInstance();
+            calendar = Calendar.getInstance();
             try {
                 calendar.setTime(timeFormat.parse(finalDate));
             } catch (ParseException e) {
@@ -368,12 +380,14 @@ public class Task_Add_Edit_Fragment extends Fragment {
             calendar.set(Calendar.MINUTE, Integer.parseInt(minute_forTS));
 
             Calendar c = Calendar.getInstance();
-            String timestamp = String.valueOf(c.getTimeInMillis()),sec, milies;
-            sec=timestamp.substring(9,11);
-            milies=timestamp.substring(11, 13);
+            String timestamp = String.valueOf(c.getTimeInMillis()), sec, milies;
+            Timber.d("Current_TimeStamp : " + timestamp);
+            sec = timestamp.substring(8, 10);
+            milies = timestamp.substring(11, 13);
+            Timber.d("Current_TimeStamp Sec : %s, milies : %s", sec, milies);
 
-            calendar.set(Calendar.SECOND, Integer.parseInt(sec));
-            calendar.set(Calendar.MILLISECOND, Integer.parseInt(milies));
+            calendar.set(Calendar.SECOND, Integer.parseInt(sec));//
+            calendar.set(Calendar.MILLISECOND, Integer.parseInt(milies));//
 
             if (AM_PM.equals(" AM")) {
                 calendar.set(Calendar.AM_PM, 0);
@@ -403,6 +417,8 @@ public class Task_Add_Edit_Fragment extends Fragment {
                 FancyToast.makeText(getActivity(), taskName + " " + getString(R.string.updated), FancyToast.LENGTH_SHORT, FancyToast.SUCCESS, false).show();
                 if (fromCalendar) {
                     goToCalendarFragment();
+                } else if (fromDelayed) {
+                    goToDashboardFragment();
                 } else {
                     goToTaskFragment();
                 }
@@ -413,6 +429,42 @@ public class Task_Add_Edit_Fragment extends Fragment {
                 goToTaskFragment();
             }
         }
+        if (taskAlarm.equals("true")) {
+            setNotification_Alarm(calendar);
+        }
+    }
+
+    private void setNotification_Alarm(Calendar calendar) {
+        AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
+
+        try {
+            Intent intent = new Intent(getActivity(), AlertReceiver.class);
+            intent.putExtra("taskName", taskName);
+            intent.putExtra("catName", catName);
+
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), 1, intent, 0);
+
+            if (calendar.before(Calendar.getInstance())) {
+                calendar.add(Calendar.DATE, 1);
+            }
+
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+        } catch (Exception e) {
+            Timber.e(e);
+        }
+    }
+
+    private void cancelNotification_Alarm(long taskTimeStamp) {
+        AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
+
+        Intent intent = new Intent(getActivity(), AlertReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), 1, intent, 0);
+
+        alarmManager.cancel(pendingIntent);
+
+//        NotificationCompat.Builder nb = notificationHelper.getChannelNotification(taskName, catName);
+//        notificationHelper.getNotificationManager().notify(1, nb.build());
+
     }
 
     public void goToTaskFragment() {
@@ -427,6 +479,10 @@ public class Task_Add_Edit_Fragment extends Fragment {
         navController.navigate(R.id.action_task_Add_Edit_Fragment_to_calendarViewFragment2, null, navOptions2);
     }
 
+    public void goToDashboardFragment() {
+        navController.navigate(R.id.action_task_Add_Edit_Fragment_to_dashboardFragment, null, navOptions3);
+    }
+
     @OnClick(R.id.close_Task_ImageView)
     public void closeTaskDetails() {
 
@@ -438,6 +494,8 @@ public class Task_Add_Edit_Fragment extends Fragment {
                 .setPositiveButton(getString(R.string.yes), R.drawable.save_icon, (dialogInterface, which) -> {
                     if (fromCalendar) {
                         goToCalendarFragment();
+                    } else if (fromDelayed) {
+                        goToDashboardFragment();
                     } else {
                         goToTaskFragment();
                     }

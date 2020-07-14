@@ -22,6 +22,9 @@
         <action
             android:id="@+id/action_dashboardFragment_to_quickTaskAddFragment"
             app:destination="@id/quickTaskAddFragment" />
+        <action
+            android:id="@+id/action_dashboardFragment_to_task_Add_Edit_Fragment"
+            app:destination="@id/task_Add_Edit_Fragment" />
     </fragment>
     <fragment
         android:id="@+id/taskFragment"
@@ -81,6 +84,13 @@
             app:destination="@id/calendarViewFragment2" />
         <argument
             android:name="fromCalendar"
+            app:argType="boolean"
+            android:defaultValue="false" />
+        <action
+            android:id="@+id/action_task_Add_Edit_Fragment_to_dashboardFragment"
+            app:destination="@id/dashboardFragment" />
+        <argument
+            android:name="fromDelayed"
             app:argType="boolean"
             android:defaultValue="false" />
     </fragment>

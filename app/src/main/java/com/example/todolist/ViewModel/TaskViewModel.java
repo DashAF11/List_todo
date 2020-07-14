@@ -164,7 +164,7 @@ public class TaskViewModel extends AndroidViewModel {
 
     public void deleteAllTasks() {
         Completable.fromAction(() -> {
-            taskDetailsDao.deleteAllTasks();
+            taskDetailsDao.deleteAllTasks_withCatIDsPresent(0);
         }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new CompletableObserver() {

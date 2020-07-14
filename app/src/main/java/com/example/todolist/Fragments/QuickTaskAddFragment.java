@@ -1,10 +1,13 @@
 package com.example.todolist.Fragments;
 
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -36,6 +39,7 @@ import androidx.navigation.Navigation;
 
 import com.example.todolist.Entities.CategoryEntity;
 import com.example.todolist.Entities.TaskDetailsEntity;
+import com.example.todolist.Notification.AlertReceiver;
 import com.example.todolist.R;
 import com.example.todolist.ViewModel.CategoryViewModel;
 import com.example.todolist.ViewModel.TaskViewModel;
@@ -73,6 +77,8 @@ public class QuickTaskAddFragment extends Fragment {
     ConstraintLayout dattimeHider_Constraint;
     @BindView(R.id.priorityHider_Constraint)
     ConstraintLayout priorityHider_Constraint;
+    @BindView(R.id.setAlarm_Constraint)
+    ConstraintLayout setAlarm_Constraint;
 
     @BindView(R.id.priorityArrow_ImageView)
     ImageView priorityArrow_ImageView;
@@ -103,6 +109,7 @@ public class QuickTaskAddFragment extends Fragment {
     TaskDetailsEntity taskDetailsEntity = new TaskDetailsEntity();
     NavController navController;
     NavOptions navOptions;
+    Calendar calendar;
 
     ArrayList<String> categoryList = new ArrayList<>();
     String headerText, catName, taskName, taskDate, taskTime, taskPriority = "low", taskAlarm = "false",
@@ -197,6 +204,19 @@ public class QuickTaskAddFragment extends Fragment {
             }
         });
 
+        setDateTime_Switch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                dattimeHider_Constraint.setVisibility(View.VISIBLE);
+                setAlarm_Constraint.setVisibility(View.VISIBLE);
+                taskSet_DT = true;
+            } else {
+                dattimeHider_Constraint.setVisibility(View.GONE);
+                setAlarm_Constraint.setVisibility(View.GONE);
+                taskAlarm = "false";
+                taskSet_DT = false;
+            }
+        });
+
         alarm_Switch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
                 taskAlarm = "true";
@@ -205,15 +225,6 @@ public class QuickTaskAddFragment extends Fragment {
             }
         });
 
-        setDateTime_Switch.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (isChecked) {
-                dattimeHider_Constraint.setVisibility(View.VISIBLE);
-                taskSet_DT = true;
-            } else {
-                dattimeHider_Constraint.setVisibility(View.GONE);
-                taskSet_DT = false;
-            }
-        });
     }
 
     @OnClick(R.id.priority_Constraint)
@@ -353,7 +364,7 @@ public class QuickTaskAddFragment extends Fragment {
             String finalDate = timeFormat.format(myDate);
             // Timber.d("finalDate :" + finalDate);
 
-            Calendar calendar = Calendar.getInstance();
+            calendar = Calendar.getInstance();
             try {
                 calendar.setTime(timeFormat.parse(finalDate));
             } catch (ParseException e) {
@@ -364,7 +375,7 @@ public class QuickTaskAddFragment extends Fragment {
 
             Calendar c = Calendar.getInstance();
             String timestamp = String.valueOf(c.getTimeInMillis()), sec, milies;
-            sec = timestamp.substring(9, 11);
+            sec = timestamp.substring(8, 10);
             milies = timestamp.substring(11, 13);
 
             calendar.set(Calendar.SECOND, Integer.parseInt(sec));
@@ -397,10 +408,35 @@ public class QuickTaskAddFragment extends Fragment {
 
             Timber.d("taskDetailsEntity : %s", taskDetailsEntity.toString());
             taskViewModel.insertTaskDetails(taskDetailsEntity);
+
+            if (taskAlarm.equals("true")) {
+                setNotification_Alarm(calendar);
+            }
             FancyToast.makeText(getActivity(), taskName + " " + getString(R.string.created), FancyToast.LENGTH_SHORT, FancyToast.SUCCESS, false).show();
             goToDashBoard();
         }
     }
+
+    private void setNotification_Alarm(Calendar calendar) {
+        AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
+
+        try {
+            Intent intent = new Intent(getActivity(), AlertReceiver.class);
+            intent.putExtra("taskName", taskName);
+            intent.putExtra("catName", catName);
+
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), 1, intent, 0);
+
+            if (calendar.before(Calendar.getInstance())) {
+                calendar.add(Calendar.DATE, 1);
+            }
+
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+        } catch (Exception e) {
+            Timber.e(e);
+        }
+    }
+
 
     private void goToDashBoard() {
         navController.navigate(R.id.action_quickTaskAddFragment_to_dashboardFragment, null, navOptions);

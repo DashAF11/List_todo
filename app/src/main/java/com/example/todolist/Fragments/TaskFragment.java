@@ -288,7 +288,6 @@ public class TaskFragment extends Fragment implements TaskDetailsAdapter.Recycle
 
             TaskDetailsEntity detailsEntity = (TaskDetailsEntity) viewHolder.itemView.getTag(R.id.taskDetails);
             // Timber.d("detailsEntity : %s", detailsEntity.toString());
-
             editDialogBox(detailsEntity);
         }
     };

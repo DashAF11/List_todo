@@ -1,6 +1,8 @@
 package com.example.todolist.Fragments;
 
 import android.app.Dialog;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -35,6 +37,9 @@ import java.util.Calendar;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static com.example.todolist.Constants.Keys.KEY_NavPage;
+import static com.example.todolist.Constants.StorageConstants.TODO_USER;
 
 public class DashboardFragment extends Fragment {
 
@@ -76,15 +81,8 @@ public class DashboardFragment extends Fragment {
     Calendar calendar;
     long timeStamp;
     NavController navController;
-
-    public static DashboardFragment newInstance() {
-//        DashboardFragment fragment = new DashboardFragment();
-//        Bundle args = new Bundle();
-//        args.putString(ARG_PARAM1, param1);
-//        args.putString(ARG_PARAM2, param2);
-//        fragment.setArguments(args);
-        return new DashboardFragment();
-    }
+    SharedPreferences spfUser;
+    SharedPreferences.Editor editor;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -94,7 +92,6 @@ public class DashboardFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_dashboard, container, false);
         ButterKnife.bind(this, view);
         return view;
@@ -119,7 +116,26 @@ public class DashboardFragment extends Fragment {
         taskViewModel = ViewModelProviders.of(this).get(TaskViewModel.class);
         navController = Navigation.findNavController(view);
         calendar = Calendar.getInstance();
-        groupClick();
+
+        spfUser = requireActivity().getSharedPreferences(TODO_USER, Context.MODE_PRIVATE);
+
+        String navPage = spfUser.getString(KEY_NavPage, "Category");
+//        Timber.d("NavigationPage ; %s", navPage);
+
+        switch (navPage) {
+            case "Category":
+                toggleGroup();
+                break;
+            case "Delayed Tasks":
+                toggleDelayed();
+                break;
+            case "Done Tasks":
+                toggleDone();
+                break;
+            case "Important Category":
+                toggleImp();
+                break;
+        }
         getCategoryCount();
         getDelayedCount();
         getDoneCount();
@@ -136,6 +152,8 @@ public class DashboardFragment extends Fragment {
 
     @OnClick(R.id.group_ImageView)
     public void toggleGroup() {
+        spfUser.edit().putString(KEY_NavPage, "Category").apply();
+        getTopName("Category");
         toggleView(group_TextView);
         delayed_TextView.setVisibility(View.GONE);
         done_TextView.setVisibility(View.GONE);
@@ -145,6 +163,8 @@ public class DashboardFragment extends Fragment {
 
     @OnClick(R.id.delayed_ImageView)
     public void toggleDelayed() {
+        spfUser.edit().putString(KEY_NavPage, "Delayed Tasks").apply();
+        getTopName("Delayed Tasks");
         toggleView(delayed_TextView);
         group_TextView.setVisibility(View.GONE);
         done_TextView.setVisibility(View.GONE);
@@ -154,6 +174,8 @@ public class DashboardFragment extends Fragment {
 
     @OnClick(R.id.done_ImageView)
     public void toggleDone() {
+        spfUser.edit().putString(KEY_NavPage, "Done Tasks").apply();
+        getTopName("Done Tasks");
         toggleView(done_TextView);
         group_TextView.setVisibility(View.GONE);
         delayed_TextView.setVisibility(View.GONE);
@@ -163,30 +185,28 @@ public class DashboardFragment extends Fragment {
 
     @OnClick(R.id.imp_ImageView)
     public void toggleImp() {
+        spfUser.edit().putString(KEY_NavPage, "Important Category").apply();
+        getTopName("Important Category");
         toggleView(imp_TextView);
         group_TextView.setVisibility(View.GONE);
         delayed_TextView.setVisibility(View.GONE);
         done_TextView.setVisibility(View.GONE);
-        favClick();
+        impClick();
     }
 
     public void groupClick() {
-        getTopName("Categories");
         replaceFragment(R.id.dashBoard_container_frameLayout, CategoryFragment.newInstance(), CategoryFragment.class.getSimpleName(), null);
     }
 
     public void delayedClick() {
-        getTopName("Delayed Tasks");
         replaceFragment(R.id.dashBoard_container_frameLayout, DelayedTaskFragment.newInstance(), DelayedTaskFragment.class.getSimpleName(), null);
     }
 
     public void doneClick() {
-        getTopName("Done Tasks");
         replaceFragment(R.id.dashBoard_container_frameLayout, DoneTaskFragment.newInstance(), DoneTaskFragment.class.getSimpleName(), null);
     }
 
-    public void favClick() {
-        getTopName("Important Categories");
+    public void impClick() {
         replaceFragment(R.id.dashBoard_container_frameLayout, ImportantCategoryFragment.newInstance(), ImportantCategoryFragment.class.getSimpleName(), null);
     }
 
@@ -303,7 +323,7 @@ public class DashboardFragment extends Fragment {
             PackageInfo pInfo = getActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0);
             String version = pInfo.versionName;
 
-            FancyToast.makeText(getActivity(), "Version : " + version, Toast.LENGTH_SHORT, FancyToast.INFO,false).show();
+            FancyToast.makeText(getActivity(), "Version : " + version, Toast.LENGTH_SHORT, FancyToast.INFO, false).show();
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
