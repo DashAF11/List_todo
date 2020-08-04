@@ -33,8 +33,8 @@ public class TaskDetailsAdapter extends RecyclerView.Adapter<TaskDetailsAdapter.
 
     Context context;
     Calendar calendar = Calendar.getInstance();
-    List<TaskDetailsEntity> detailsEntities;
-    List<TaskDetailsEntity> detailsSearchEntities;
+    List<TaskDetailsEntity> detailsEntities = new ArrayList<>();;
+    List<TaskDetailsEntity> detailsSearchEntities = new ArrayList<>();;
     RecyclerClickListener clickListener;
 
     public TaskDetailsAdapter(Context context, RecyclerClickListener clickListener) {
@@ -44,7 +44,7 @@ public class TaskDetailsAdapter extends RecyclerView.Adapter<TaskDetailsAdapter.
 
     public void setTaskList(List<TaskDetailsEntity> taskDetailsEntities) {
         this.detailsEntities = taskDetailsEntities;
-        this.detailsSearchEntities = new ArrayList<>(taskDetailsEntities);
+        this.detailsSearchEntities.addAll(taskDetailsEntities);
         //Timber.d("categoryEntities_Size : %s", detailsEntities.size());
         this.notifyDataSetChanged();
     }

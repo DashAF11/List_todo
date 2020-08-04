@@ -1,4 +1,4 @@
-package com.example.todolist.Notification;
+package com.example.todolist.Services;
 
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -21,8 +21,8 @@ public class NotificationHelper extends ContextWrapper {
 
     private NotificationManager notificationManager;
 
-    public NotificationHelper(Context base) {
-        super(base);
+    public NotificationHelper(Context context) {
+        super(context);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             createChannel();
         }
@@ -50,6 +50,7 @@ public class NotificationHelper extends ContextWrapper {
 
     public NotificationCompat.Builder getChannelNotification(String taskName, String catName)//
     {
+        //to where on click action of notification goes to
         Intent intent = new Intent(this, MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 1, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
@@ -57,7 +58,7 @@ public class NotificationHelper extends ContextWrapper {
                 .setContentTitle("Task : " + taskName)
                 .setContentText("Category : " + catName)
                 .setSmallIcon(R.drawable.app_icon)
-                .setAutoCancel(true)
+                .setAutoCancel(false)
                 .setContentIntent(pendingIntent);
     }
 }

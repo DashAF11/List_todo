@@ -39,7 +39,7 @@ import androidx.navigation.Navigation;
 
 import com.example.todolist.Entities.CategoryEntity;
 import com.example.todolist.Entities.TaskDetailsEntity;
-import com.example.todolist.Notification.AlertReceiver;
+import com.example.todolist.Services.AlertReceiver;
 import com.example.todolist.R;
 import com.example.todolist.ViewModel.CategoryViewModel;
 import com.example.todolist.ViewModel.TaskViewModel;
@@ -288,12 +288,11 @@ public class QuickTaskAddFragment extends Fragment {
                     min = "" + minute;
                 }
                 mytimeHR_M = (hrs + ":" + min);
-
-                AM_PM = " AM";
+                AM_PM = "AM";
                 String mm_precede = "";
                 String hr_precede = "";
                 if (hourOfDay >= 12) {
-                    AM_PM = " PM";
+                    AM_PM = "PM";
                     if (hourOfDay >= 13 && hourOfDay < 24) {
                         hourOfDay -= 12;
                     } else {
@@ -372,17 +371,12 @@ public class QuickTaskAddFragment extends Fragment {
             }
             calendar.set(Calendar.HOUR, Integer.parseInt(hr_forTS));
             calendar.set(Calendar.MINUTE, Integer.parseInt(minute_forTS));
+            calendar.set(Calendar.SECOND, 4);
+            calendar.set(Calendar.MILLISECOND, 2);
 
-            Calendar c = Calendar.getInstance();
-            String timestamp = String.valueOf(c.getTimeInMillis()), sec, milies;
-            sec = timestamp.substring(8, 10);
-            milies = timestamp.substring(11, 13);
-
-            calendar.set(Calendar.SECOND, Integer.parseInt(sec));
-            calendar.set(Calendar.MILLISECOND, Integer.parseInt(milies));
-            if (AM_PM.equals(" AM")) {
+            if (AM_PM.equals("AM")) {
                 calendar.set(Calendar.AM_PM, 0);
-            } else {
+            } else if (AM_PM.equals("PM")) {
                 calendar.set(Calendar.AM_PM, 1);
             }
             //  Timber.d("taskTimeStamp : %d", calendar.getTimeInMillis());

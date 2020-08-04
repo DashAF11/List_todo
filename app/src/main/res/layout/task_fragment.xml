@@ -32,7 +32,8 @@
     <ImageView
         android:id="@+id/navigatebackTask_ImageView"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
+        android:layout_marginTop="@dimen/dp_5"
         android:padding="10dp"
         android:src="@drawable/back_arrow_icon"
         app:layout_constraintStart_toStartOf="parent"
@@ -42,16 +43,16 @@
         android:id="@+id/task_categoryName_TextView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
         android:ellipsize="end"
         android:maxLines="1"
         android:text="@string/dash"
         android:textColor="@color/white"
         android:textSize="@dimen/textXL"
         android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/navigatebackTask_ImageView"
         app:layout_constraintEnd_toStartOf="@+id/filter_ImageView"
         app:layout_constraintStart_toEndOf="@+id/navigatebackTask_ImageView"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@+id/navigatebackTask_ImageView" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"

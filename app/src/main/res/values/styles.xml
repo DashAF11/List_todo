@@ -251,7 +251,7 @@
     <style name="addTask_DateTime_Constraint">
         <item name="android:layout_margin">5dp</item>
         <item name="android:layout_width">0dp</item>
-        <item name="android:layout_height">100dp</item>
+        <item name="android:layout_height">wrap_content</item>
         <item name="android:background">@drawable/rounded_corner_background_light_purple</item>
         <item name="android:padding">5dp</item>
     </style>

@@ -269,9 +269,9 @@
             android:textColor="@color/white"
             android:textSize="@dimen/textL"
             android:textStyle="bold|italic"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toBottomOf="@+id/calendar_ImageView"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="@+id/calendar_ImageView" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

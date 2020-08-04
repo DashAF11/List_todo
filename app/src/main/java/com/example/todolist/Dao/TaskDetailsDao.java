@@ -113,8 +113,16 @@ public interface TaskDetailsDao {
     LiveData<Integer> totalDelayTaskCount(long currentTimeStamp, String status);
 
     @Query("SELECT * FROM " + TABLE_TASK
-            + " WHERE " + COLUMN_TASK_CATID + "=:catId")
+            + " WHERE " + COLUMN_TASK_CATID + "=:catId"
+            + " ORDER BY " + COLUMN_TASK_TIMESTAMP + " ASC ")
     Single<List<TaskDetailsEntity>> getAllTasksData(long catId);
+
+    @Query(" SELECT * FROM " + TABLE_TASK
+            + " WHERE " + COLUMN_TASK_ALARM + "=:status"
+            + " AND " + COLUMN_TASK_TIMESTAMP + ">=:currentTimeStamp"
+            + " ORDER BY " + COLUMN_TASK_TIMESTAMP + " ASC ")
+//            + " LIMIT 1")
+    LiveData<List<TaskDetailsEntity>> getAlarmTasks(String status, long currentTimeStamp);
 
     @Query("SELECT * FROM " + TABLE_TASK
             + " WHERE " + COLUMN_TASK_TIMESTAMP + " BETWEEN :startTimeMillis AND :endTimeMillis "

@@ -140,7 +140,7 @@ public class CategoryFragment extends Fragment implements CategoryAdapter.Catego
     public void getCategoriesData() {
         categoryViewModel.getLiveCategoriesData().observe(getViewLifecycleOwner(), categoryEntities -> {
             detailedCategory.clear();
-            Timber.d("getCategoryMutableLiveData : %s", categoryEntities.toString());
+            Timber.d("getLiveCategoriesData : %s", categoryEntities.toString());
             detailedCategory.addAll(categoryEntities);
 
             if (categoryEntities.size() == 0) {

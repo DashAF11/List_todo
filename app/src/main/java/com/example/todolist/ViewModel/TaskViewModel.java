@@ -61,6 +61,10 @@ public class TaskViewModel extends AndroidViewModel {
         return taskDetailsDao.getAllDelayTaskLiveData(timeStamp,status);
     }
 
+    public LiveData<List<TaskDetailsEntity>> getAlarmTasks(long currentTimeStamp) {
+        return taskDetailsDao.getAlarmTasks("true",currentTimeStamp);
+    }
+
     public LiveData<List<TaskDetailsEntity>> sortedData(long catId, long timestamp, String status, String priority, String priority2, String priority3) {
         return taskDetailsDao.sortedData(catId, timestamp, status, priority, priority2, priority3);
     }
@@ -164,7 +168,7 @@ public class TaskViewModel extends AndroidViewModel {
 
     public void deleteAllTasks() {
         Completable.fromAction(() -> {
-            taskDetailsDao.deleteAllTasks_withCatIDsPresent(0);
+            taskDetailsDao.deleteAllTasks();
         }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new CompletableObserver() {
@@ -185,6 +189,28 @@ public class TaskViewModel extends AndroidViewModel {
                 });
     }
 
+    public void deleteAllTasksWithCatID(long catId) {
+        Completable.fromAction(() -> {
+            taskDetailsDao.deleteAllTasks_withCatIDsPresent(catId);
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new CompletableObserver() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        Timber.d("deleteAllTasks_onComplete");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Timber.e(e);
+                    }
+                });
+    }
 
     public void updateTask(TaskDetailsEntity taskDetailsEntity, long taskId) {
         Timber.d("updateTask_Data : %s", taskDetailsEntity.toString());

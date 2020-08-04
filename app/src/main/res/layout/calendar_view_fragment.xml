@@ -16,10 +16,10 @@
 
         <ImageView
             android:id="@+id/backCalender_ImageView"
-            android:layout_width="50dp"
-            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
             android:layout_marginStart="7dp"
-            android:padding="5dp"
+            android:padding="10dp"
             android:src="@drawable/back_arrow_icon"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -28,13 +28,13 @@
             android:id="@+id/topHeader_TextView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
             android:text="@string/calendar_view"
             android:textColor="@color/white"
             android:textSize="@dimen/textXL"
             android:textStyle="normal"
             app:layout_constraintStart_toEndOf="@+id/backCalender_ImageView"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="@+id/backCalender_ImageView"
+            app:layout_constraintBottom_toBottomOf="@+id/backCalender_ImageView"/>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"

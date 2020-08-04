@@ -44,9 +44,6 @@ public class SplashScreen extends AppCompatActivity {
         ButterKnife.bind(this);
 
         getSupportActionBar().hide();
-//        list_TextView = (TextView) findViewById(R.id.list_TextView);
-//        todo_TextView = (TextView) findViewById(R.id.todo_TextView);
-//        app_icon_ImageView = (ImageView) findViewById(R.id.app_icon_ImageView);
 
         try {
             PackageInfo pInfo = this.getPackageManager().getPackageInfo(getPackageName(), 0);

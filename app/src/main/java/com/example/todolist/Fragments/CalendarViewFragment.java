@@ -262,7 +262,7 @@ public class CalendarViewFragment extends Fragment implements CalendarViewAdapte
                 .setPositiveButton(getString(R.string.delete), R.drawable.delete_white_icon, (dialogInterface, which) -> {
 
                     if (allTask) {
-                        taskViewModel.deleteAllTasks();
+                       // taskViewModel.deleteAllTasks();
                         FancyToast.makeText(getActivity(), getString(R.string.all_tasks_deleted), FancyToast.LENGTH_SHORT, FancyToast.SUCCESS, false).show();
                     } else {
                         taskViewModel.deleteSingleTask(catId, taskId);

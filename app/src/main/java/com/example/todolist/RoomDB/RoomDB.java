@@ -2,14 +2,14 @@ package com.example.todolist.RoomDB;
 
 import android.content.Context;
 
+import androidx.room.Database;
+import androidx.room.Room;
+import androidx.room.RoomDatabase;
+
 import com.example.todolist.Dao.CategoryDao;
 import com.example.todolist.Dao.TaskDetailsDao;
 import com.example.todolist.Entities.CategoryEntity;
 import com.example.todolist.Entities.TaskDetailsEntity;
-
-import androidx.room.Database;
-import androidx.room.Room;
-import androidx.room.RoomDatabase;
 
 import static com.example.todolist.RoomDB.RoomMigration.MIGRATION_1_2;
 import static com.example.todolist.RoomDB.RoomTables.ROOM_DB_NAME;
@@ -22,10 +22,12 @@ public abstract class RoomDB extends RoomDatabase {
 
     public static RoomDB getRoomDB(Context context) {
         if (roomDBHelper == null) {
-            roomDBHelper = Room.databaseBuilder(context.getApplicationContext(),
-                    RoomDB.class, ROOM_DB_NAME)
-                    .addMigrations(MIGRATION_1_2)
-                    .build();
+            synchronized (RoomDB.class) {
+                roomDBHelper = Room.databaseBuilder(context.getApplicationContext(),
+                        RoomDB.class, ROOM_DB_NAME)
+                        .addMigrations(MIGRATION_1_2)
+                        .build();
+            }
         }
         return roomDBHelper;
     }

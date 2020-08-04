@@ -392,7 +392,7 @@ public class TaskFragment extends Fragment implements TaskDetailsAdapter.Recycle
                 .setCancelable(false)
                 .setPositiveButton(getString(R.string.delete), R.drawable.delete_white_icon, (dialogInterface, which) -> {
                     if (allTask) {
-                        taskViewModel.deleteAllTasks();
+                        taskViewModel.deleteAllTasksWithCatID(catId);
                         FancyToast.makeText(getActivity(), getString(R.string.all_tasks_deleted), FancyToast.LENGTH_SHORT, FancyToast.SUCCESS, false).show();
                     } else {
                         taskViewModel.deleteSingleTask(catId, taskId);

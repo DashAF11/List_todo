@@ -1,11 +1,18 @@
 package com.example.todolist.Fragments;
 
+import android.app.AlarmManager;
 import android.app.Dialog;
+import android.app.PendingIntent;
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,12 +28,15 @@ import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 import com.example.todolist.Entities.CategoryEntity;
 import com.example.todolist.R;
+import com.example.todolist.Services.AlertReceiver;
+import com.example.todolist.Services.TaskNotificationService;
 import com.example.todolist.ViewModel.CategoryViewModel;
 import com.example.todolist.ViewModel.TaskViewModel;
 import com.shashank.sony.fancytoastlib.FancyToast;
@@ -37,7 +47,9 @@ import java.util.Calendar;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import timber.log.Timber;
 
+import static android.content.Context.JOB_SCHEDULER_SERVICE;
 import static com.example.todolist.Constants.Keys.KEY_NavPage;
 import static com.example.todolist.Constants.StorageConstants.TODO_USER;
 
@@ -81,8 +93,7 @@ public class DashboardFragment extends Fragment {
     Calendar calendar;
     long timeStamp;
     NavController navController;
-    SharedPreferences spfUser;
-    SharedPreferences.Editor editor;
+    SharedPreferences preference;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -117,9 +128,9 @@ public class DashboardFragment extends Fragment {
         navController = Navigation.findNavController(view);
         calendar = Calendar.getInstance();
 
-        spfUser = requireActivity().getSharedPreferences(TODO_USER, Context.MODE_PRIVATE);
+        preference = requireActivity().getSharedPreferences(TODO_USER, Context.MODE_PRIVATE);
 
-        String navPage = spfUser.getString(KEY_NavPage, "Category");
+        String navPage = preference.getString(KEY_NavPage, "Category");
 //        Timber.d("NavigationPage ; %s", navPage);
 
         switch (navPage) {
@@ -140,6 +151,9 @@ public class DashboardFragment extends Fragment {
         getDelayedCount();
         getDoneCount();
         getImpCategoryCount();
+
+        getAlarmTasks();
+        //startService();
     }
 
     private void toggleView(TextView textView) {
@@ -152,7 +166,7 @@ public class DashboardFragment extends Fragment {
 
     @OnClick(R.id.group_ImageView)
     public void toggleGroup() {
-        spfUser.edit().putString(KEY_NavPage, "Category").apply();
+        preference.edit().putString(KEY_NavPage, "Category").apply();
         getTopName("Category");
         toggleView(group_TextView);
         delayed_TextView.setVisibility(View.GONE);
@@ -163,7 +177,7 @@ public class DashboardFragment extends Fragment {
 
     @OnClick(R.id.delayed_ImageView)
     public void toggleDelayed() {
-        spfUser.edit().putString(KEY_NavPage, "Delayed Tasks").apply();
+        preference.edit().putString(KEY_NavPage, "Delayed Tasks").apply();
         getTopName("Delayed Tasks");
         toggleView(delayed_TextView);
         group_TextView.setVisibility(View.GONE);
@@ -174,7 +188,7 @@ public class DashboardFragment extends Fragment {
 
     @OnClick(R.id.done_ImageView)
     public void toggleDone() {
-        spfUser.edit().putString(KEY_NavPage, "Done Tasks").apply();
+        preference.edit().putString(KEY_NavPage, "Done Tasks").apply();
         getTopName("Done Tasks");
         toggleView(done_TextView);
         group_TextView.setVisibility(View.GONE);
@@ -185,7 +199,7 @@ public class DashboardFragment extends Fragment {
 
     @OnClick(R.id.imp_ImageView)
     public void toggleImp() {
-        spfUser.edit().putString(KEY_NavPage, "Important Category").apply();
+        preference.edit().putString(KEY_NavPage, "Important Category").apply();
         getTopName("Important Category");
         toggleView(imp_TextView);
         group_TextView.setVisibility(View.GONE);
@@ -327,5 +341,98 @@ public class DashboardFragment extends Fragment {
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
+    }
+
+    void getAlarmTasks() {
+        try {
+            Calendar calendar = Calendar.getInstance();
+            taskViewModel.getAlarmTasks(calendar.getTimeInMillis()).observe((LifecycleOwner) this, taskDetailsEntities -> {
+
+                if (taskDetailsEntities.size() != 0) {
+                    for (int i = 0; i < taskDetailsEntities.size(); i++) {
+                        JobSchedule(taskDetailsEntities.get(0).getTimestamp(), taskDetailsEntities.get(0).getTask_name(), taskDetailsEntities.get(0).getTask_catName());
+                    }
+                    //     setNotification_Alarm(taskDetailsEntities.get(0).getTimestamp(), taskDetailsEntities.get(0).getTask_name(), taskDetailsEntities.get(0).getTask_catName());
+                    Timber.d("getAlarmTasks : %s", taskDetailsEntities.toString());
+                }
+            });
+        } catch (Exception e) {
+            Timber.e(e);
+        }
+    }
+
+    private void setNotification_Alarm(long timeStamp, String taskName, String catName) {
+        try {
+
+            AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
+
+            Intent intent = new Intent(getActivity(), AlertReceiver.class);
+            intent.putExtra("taskName", taskName);
+            intent.putExtra("catName", catName);
+
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), 1, intent, 0);
+
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(timeStamp);
+            Timber.d("Converted_TimeStamp ; %d", calendar.getTimeInMillis());
+
+            if (calendar.before(Calendar.getInstance())) {
+                calendar.add(Calendar.DATE, 1);
+            }
+            //alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, AlarmManager.ELAPSED_REALTIME, calendar.getTimeInMillis(), pendingIntent);
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);// calendar.getTimeInMillis()
+
+        } catch (Exception e) {
+            Timber.e(e);
+        }
+    }
+//
+//    private void cancelNotification_Alarm(long taskTimeStamp) {
+//        AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
+//
+//        Intent intent = new Intent(getActivity(), AlertReceiver.class);
+//        PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), 1, intent, 0);
+//
+//        alarmManager.cancel(pendingIntent);
+//
+////        NotificationCompat.Builder nb = notificationHelper.getChannelNotification(taskName, catName);
+////        notificationHelper.getNotificationManager().notify(1, nb.build());
+//    }
+
+    private void JobSchedule(long timeStamp, String taskName, String catName) {
+
+        ComponentName componentName = new ComponentName(getActivity(), TaskNotificationService.class);
+
+        PersistableBundle bundle = new PersistableBundle();
+        bundle.putString("taskName", taskName);
+        bundle.putString("catName", catName);
+
+        JobInfo jobInfo = new JobInfo.Builder(11, componentName)
+                .setExtras(bundle)
+                .setPersisted(true)
+                .setMinimumLatency(timeStamp)
+                .setOverrideDeadline(timeStamp)
+                .build();
+
+        JobScheduler scheduler = (JobScheduler) getActivity().getSystemService(JOB_SCHEDULER_SERVICE);
+        scheduler.schedule(jobInfo);
+        Toast.makeText(getActivity(), "Job Scheduled", Toast.LENGTH_SHORT).show();
+//        try {
+//            int resultCode = scheduler.schedule(jobInfo);
+//
+//            if (resultCode == JobScheduler.RESULT_SUCCESS) {
+//                Toast.makeText(getActivity(), "Job Scheduled", Toast.LENGTH_SHORT).show();
+//            } else {
+//                Toast.makeText(getActivity(), "Job Scheduling failed", Toast.LENGTH_SHORT).show();
+//            }
+//        } catch (Exception e) {
+//            Timber.e(e);
+//        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        preference.edit().clear().apply();//clear Preferences
     }
 }
